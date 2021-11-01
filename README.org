@@ -1,0 +1,10 @@
+#+TITLE: Readme for Gomation
+
+* To implement
+** Add basic web API to interact with Linkedin API
+* Resources
+** https://github.com/johnaoss/linkedin-api
+*** Has to be ported to v2
+*** but the [[https://github.com/johnaoss/linkedin-api/blob/master/api.go][entities]] can be use
+** [[https://stackoverflow.com/questions/64514954/lsp-mode-for-go-erring-out-with-no-views-in-session][regarding LSP mode with golang]]
+** https://github.com/dexidp/dex/blob/master/examples/example-app/main.go
