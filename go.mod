@@ -6,6 +6,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.1.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/sessions v1.2.1
+	github.com/markbates/goth v1.68.0
 	github.com/spf13/cobra v1.2.1
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 )

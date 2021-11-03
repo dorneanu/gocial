@@ -7,3 +7,6 @@
 
 
 # end
+
+build:
+	go build -o gomation ./cli/main.go
