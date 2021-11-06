@@ -1,31 +1,28 @@
 package main
 
 import (
-	"log"
-	"net/http"
-	"time"
+	"os"
 
-	"github.com/dorneanu/gomation/app"
+	"github.com/dorneanu/gomation/internal/auth"
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	// Create new application
-	app := &app.Gomation{}
-	app.Init()
-
-	// Create http mux
-	mux := mux.NewRouter()
-	mux.HandleFunc("/", app.HandleIndex)
-	mux.HandleFunc("/auth/{provider}", app.HandleAuth)
-	mux.HandleFunc("/auth/{provider}/callback", app.HandleCallback)
-
-	// new HTTP server
-	srv := &http.Server{
-		Handler:      mux,
-		Addr:         "127.0.0.1:3000",
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+	// New linkedin repository
+	oauthConfigs := []auth.OAuthConfig{
+		auth.OAuthConfig{
+			ProviderName: "linkedin",
+			Scopes:       []string{"r_emailaddress", "r_liteprofile", "w_member_social"},
+			ClientID:     os.Getenv("LINKEDIN_CLIENT_ID"),
+			ClientSecret: os.Getenv("LINKEDIN_CLIENT_SECRET"),
+			CallbackURL:  "http://localhost:3000/auth/linkedin/callback",
+		},
 	}
-	log.Fatal(srv.ListenAndServe())
+	// New goth auth repository
+	r := mux.NewRouter()
+	gothRepository := auth.NewGothRepository(r, oauthConfigs)
+
+	// New auth service
+	authService := auth.NewService(gothRepository, r)
+	authService.Start()
 }
