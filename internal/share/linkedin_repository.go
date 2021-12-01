@@ -11,28 +11,6 @@ import (
 	"github.com/dorneanu/gomation/internal/entity"
 )
 
-// POST https://api.linkedin.com/v2/ugcPosts
-// Authorization: Bearer {{(verb-var token)}}
-// Accept: application/json
-// X-Restli-Protocol-Version: 2.0.0
-// Content-Type: application/json; charset=utf-8
-
-// {
-//     "author": "urn:li:person:GJ74B4A98G",
-//     "lifecycleState": "PUBLISHED",
-//     "specificContent": {
-//         "com.linkedin.ugc.ShareContent": {
-//             "shareCommentary": {
-//                 "text": "Testing"
-//             },
-//             "shareMediaCategory": "NONE"
-//         }
-//     },
-//     "visibility": {
-//         "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
-//     }
-// }
-
 const (
 	// API URL for User Generated Content (UGC)
 	linkedinUGCAPI = "https://api.linkedin.com/v2/ugcPosts"
@@ -67,10 +45,12 @@ type LinkedinUGCShareContent struct {
 //
 // Also check https://docs.microsoft.com/en-us/linkedin/marketing/integrations/community-management/shares/ugc-post-api?tabs=http#schema
 type LinkedinUGCSharePost struct {
-	Author          string                  `json:"author"`
-	LifecycleState  string                  `json:"lifecycleState"`
-	SpecificContent LinkedinUGCShareContent `json:"specificContent"`
-	Visibility      struct {
+	Author          string `json:"author"`
+	LifecycleState  string `json:"lifecycleState"`
+	SpecificContent struct {
+		ShareContent LinkedinUGCShareContent `json:"com.linkedin.ugc.ShareContent"`
+	} `json:"specificContent"`
+	Visibility struct {
 		MemberNetworkVisibility string `json:"com.linkedin.ugc.MemberNetworkVisibility"`
 	} `json:"visibility"`
 }
@@ -91,26 +71,26 @@ func NewLinkedinShareRepository(identity entity.Identity) *LinkedinShareReposito
 func (l *LinkedinShareRepository) createNewPost(article entity.ArticleShare) *LinkedinUGCSharePost {
 	// Create share content information
 	shareContent := LinkedinUGCShareContent{}
-	shareContent.ShareCommentary.Text = "some text"
+	shareContent.ShareCommentary.Text = article.Comment
 	shareContent.ShareMediaCategory = "ARTICLE"
 	shareContent.Media = []LinkedinUGCShareMedia{
 		LinkedinUGCShareMedia{
 			Status: "READY",
 			Description: struct {
 				Text string "json:\"text\""
-			}{"alles klar"},
-			OriginalURL: "http://google.de",
+			}{article.Title},
+			OriginalURL: article.URL,
 			Title: struct {
 				Text string "json:\"text\""
-			}{"alles klar"},
+			}{article.Title},
 		},
 	}
 
 	// Create UGC share post
 	sharePost := LinkedinUGCSharePost{}
-	sharePost.Author = l.identity.ID
+	sharePost.Author = fmt.Sprintf("urn:li:person:%s", l.identity.ID)
 	sharePost.LifecycleState = "PUBLISHED"
-	sharePost.SpecificContent = shareContent
+	sharePost.SpecificContent.ShareContent = shareContent
 	sharePost.Visibility = struct {
 		MemberNetworkVisibility string `json:"com.linkedin.ugc.MemberNetworkVisibility"`
 	}{"PUBLIC"}
@@ -122,7 +102,7 @@ func (l *LinkedinShareRepository) ShareArticle(ctx context.Context, article enti
 	ugcPost := l.createNewPost(article)
 
 	// Marshalize ugcPost
-	jsonStr, err := json.Marshal(ugcPost)
+	jsonStr, err := json.MarshalIndent(ugcPost, "", "  ")
 	if err != nil {
 		return fmt.Errorf("Couldn't marshalize ugcPost: %s\n", err)
 	}
@@ -132,6 +112,8 @@ func (l *LinkedinShareRepository) ShareArticle(ctx context.Context, article enti
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", l.identity.AccessToken))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Restli-Protocol-Version", "2.0.0")
+
+	fmt.Printf("%v\n", req.Header)
 
 	// Send request
 	resp, err := l.client.Do(req)

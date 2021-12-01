@@ -7,11 +7,13 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/dorneanu/gomation/internal/entity"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/linkedin"
+	"github.com/markbates/goth/providers/twitter"
 )
 
 type Repository interface {
@@ -19,6 +21,7 @@ type Repository interface {
 	HandleIndex(http.ResponseWriter, *http.Request)
 	HandleAuth(http.ResponseWriter, *http.Request)
 	HandleCallback(http.ResponseWriter, *http.Request)
+	SaveAuthDetails(http.ResponseWriter, *http.Request)
 }
 
 type ProviderIndex struct {
@@ -29,13 +32,20 @@ type ProviderIndex struct {
 type GothRepository struct {
 	mux           *mux.Router
 	providerIndex ProviderIndex
-	oauthConfigs  []OAuthConfig
+	oauthConfigs  map[string]OAuthConfig
+	identityRepo  entity.IdentityRepository
 }
 
-func NewGothRepository(m *mux.Router, confs []OAuthConfig) *GothRepository {
+func NewGothRepository(m *mux.Router, confs []OAuthConfig, idRepo entity.IdentityRepository) *GothRepository {
+	oauthConfs := make(map[string]OAuthConfig)
+	for _, c := range confs {
+		oauthConfs[c.ProviderName] = c
+	}
+
 	return &GothRepository{
 		mux:          m,
-		oauthConfigs: confs,
+		oauthConfigs: oauthConfs,
+		identityRepo: idRepo,
 	}
 }
 
@@ -46,7 +56,7 @@ func (r *GothRepository) Init() {
 }
 
 func (r *GothRepository) setupCookies() {
-	// TODO: Replace this
+	// TODO: Customize this somewhere else
 	key := "Secret-session-key"
 	maxAge := 86400 * 30 // 30 days
 	isProd := false      // set to true when serving over HTTPS
@@ -61,9 +71,11 @@ func (r *GothRepository) setupCookies() {
 }
 
 func (r *GothRepository) setupRoutes() {
+	// Setup HTTP routes using gorilla/mux
 	r.mux.HandleFunc("/", r.HandleIndex)
 	r.mux.HandleFunc("/auth/{provider}", r.HandleAuth)
 	r.mux.HandleFunc("/auth/{provider}/callback", r.HandleCallback)
+	r.mux.HandleFunc("/save", r.SaveAuthDetails)
 }
 
 func (r *GothRepository) setupProviders() {
@@ -82,7 +94,12 @@ func (r *GothRepository) setupProviders() {
 
 			goth.UseProviders(idpLinkedin)
 		} else if oauthConf.ProviderName == "twitter" {
-			fmt.Printf("Needs to be implemented")
+			idpTwitter := twitter.New(
+				oauthConf.ClientID,
+				oauthConf.ClientSecret,
+				oauthConf.CallbackURL,
+			)
+			goth.UseProviders(idpTwitter)
 		}
 	}
 
@@ -110,6 +127,39 @@ func (r *GothRepository) HandleCallback(w http.ResponseWriter, req *http.Request
 		fmt.Fprintln(w, err)
 		return
 	}
-	t, _ := template.New("gothrepository").Parse(userTemplate)
-	t.Execute(w, user)
+
+	provider, err := gothic.GetProviderName(req)
+	if err != nil {
+		fmt.Fprintf(w, "Couldn't get provider: %s", err)
+		return
+	}
+
+	// Create new identity
+	id := entity.Identity{
+		Provider:          provider,
+		Name:              user.Name,
+		ID:                user.UserID,
+		AccessToken:       user.AccessToken,
+		AccessTokenSecret: user.AccessTokenSecret,
+	}
+
+	fmt.Printf("repo: %v\n", id)
+
+	// Persist identity
+	err = r.identityRepo.Add(id)
+	if err != nil {
+		fmt.Printf("Couldn't add new identity: %s\n", err)
+	}
+
+	// Redirect to save
+	http.Redirect(w, req, "/save", http.StatusSeeOther)
+}
+
+func (r *GothRepository) SaveAuthDetails(w http.ResponseWriter, req *http.Request) {
+	err := r.identityRepo.Save()
+	if err != nil {
+		fmt.Fprintf(w, "There was an error saving auth details: %s\n", err)
+	} else {
+		fmt.Fprint(w, "Successfully stored auth details")
+	}
 }

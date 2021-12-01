@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/dorneanu/gomation/internal/entity"
 	"github.com/gorilla/mux"
 )
 
@@ -14,6 +15,7 @@ type OAuthConfig struct {
 	ClientSecret string
 	CallbackURL  string
 	Scopes       []string
+	Identity     entity.Identity
 }
 
 type Service interface {
@@ -25,9 +27,9 @@ type service struct {
 	router *mux.Router
 }
 
-func NewService(repo Repository, router *mux.Router) Service {
+func NewService(authRepo Repository, router *mux.Router) Service {
 	return service{
-		repo:   repo,
+		repo:   authRepo,
 		router: router,
 	}
 }

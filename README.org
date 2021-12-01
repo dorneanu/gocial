@@ -8,3 +8,7 @@
 *** but the [[https://github.com/johnaoss/linkedin-api/blob/master/api.go][entities]] can be use
 ** [[https://stackoverflow.com/questions/64514954/lsp-mode-for-go-erring-out-with-no-views-in-session][regarding LSP mode with golang]]
 ** https://github.com/dexidp/dex/blob/master/examples/example-app/main.go
+** [[https://www.loginradius.com/blog/async/twitter-authentication-with-golang-and-goth/][Twitter Authentication with Golang and Goth]]
+** Twitter
+*** Authentication
+- [[https://developer.twitter.com/en/docs/authentication/oauth-1-0a][OAuth 1.0a User Context]]
