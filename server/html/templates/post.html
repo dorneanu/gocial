@@ -1,0 +1,18 @@
+{{define "content"}}
+<div class="editor flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg">
+  <input class="title bg-gray-100 border border-gray-300 p-2 mb-6 outline-none" spellcheck="false" placeholder="Title" type="text">
+  <input class="description bg-gray-100 sec p-3 h-10 border border-gray-300 outline-none" spellcheck="false" placeholder="Describe everything about this post here"></input>
+  <input class="url bg-gray-100 p-3 h-10 border border-gray-300 outline-none" spellcheck="false" placeholder="Put URL here"></input>
+
+  <!-- icons -->
+  <div class="icons flex text-gray-500 m-2">
+    <div class="count ml-auto text-gray-400 text-xs font-semibold">0/300</div>
+  </div>
+
+  <!-- buttons -->
+  <div class="buttons flex">
+    <div class="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">{{ .CancelButtonMessage }}</div>
+    <div class="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">{{ .SendButtonMessage }}</div>
+  </div>
+</div>
+{{end}}

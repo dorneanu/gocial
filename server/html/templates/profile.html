@@ -1,0 +1,12 @@
+<!-- profile.html -->
+{{define "content"}}
+<!-- Show fields jwt.JwtCustomClaims -->
+<div class="profile">
+  <p>Your username: {{.UserName}}</p>
+  <p>Provider: {{.Provider}}</p>
+  <p>ID: {{.UserID}}
+  <p>AccessToken: {{.AccessToken}}</p>
+  <p>AccessTokenSecret: {{.AccessTokenSecret}}</p>
+  <p>RefreshToken: {{.RefreshToken}}</p>
+</div>
+{{end}}
