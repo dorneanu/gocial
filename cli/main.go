@@ -6,11 +6,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/dorneanu/gomation/internal/auth"
 	"github.com/dorneanu/gomation/internal/config"
 	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gomation/internal/oauth"
 	"github.com/dorneanu/gomation/internal/share"
-	"github.com/gorilla/mux"
+	"github.com/dorneanu/gomation/server"
 	"github.com/urfave/cli/v2"
 )
 
@@ -27,7 +27,7 @@ func main() {
 		Authors: []*cli.Author{
 			&cli.Author{
 				Name:  "Victor Dorneanu",
-				Email: "some e-mail",
+				Email: "info ät dornea DOT nu",
 			},
 		},
 		Version:  "v0.1",
@@ -39,21 +39,26 @@ func main() {
 				Aliases: []string{"a"},
 				Usage:   "Authenticate against identity providers",
 				Action: func(c *cli.Context) error {
+					webServerConf := server.HTTPServerConfig{
+						ListenAddr:      "127.0.0.1:3000",
+						TokenSigningKey: "secret key",
+						TokenExpiration: 5,
+					}
 
-					// New linkedin repository
-					oauthConfigs := []auth.OAuthConfig{
-						auth.OAuthConfig{
+					// Create OAuth configs for different providers
+					oauthConfigs := []oauth.OAuthConfig{
+						oauth.OAuthConfig{
 							ProviderName: "linkedin",
 							Scopes:       []string{"r_emailaddress", "r_liteprofile", "w_member_social"},
 							ClientID:     os.Getenv("LINKEDIN_CLIENT_ID"),
 							ClientSecret: os.Getenv("LINKEDIN_CLIENT_SECRET"),
-							CallbackURL:  "http://localhost:3000/auth/linkedin/callback",
+							CallbackURL:  fmt.Sprintf("http://%s/auth/callback/linkedin", webServerConf.ListenAddr),
 						},
-						auth.OAuthConfig{
+						oauth.OAuthConfig{
 							ProviderName: "twitter",
 							ClientID:     os.Getenv("TWITTER_CLIENT_KEY"),
 							ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
-							CallbackURL:  "http://127.0.0.1:3000/auth/twitter/callback",
+							CallbackURL:  fmt.Sprintf("http://%s/auth/callback/twitter", webServerConf.ListenAddr),
 						},
 					}
 
@@ -61,12 +66,22 @@ func main() {
 					idRepo := entity.NewFileIdentityRepo("./auth.yaml")
 
 					// New goth auth repository
-					r := mux.NewRouter()
-					gothRepository := auth.NewGothRepository(r, oauthConfigs, idRepo)
+					providerIndex := oauth.SetupAuthProviders(oauthConfigs)
+					gothRepository := oauth.NewGothRepository(providerIndex, idRepo, webServerConf.TokenSigningKey)
 
-					// New auth service
-					authService := auth.NewService(gothRepository, r)
-					authService.Start()
+					// New OAuth authentication service service
+					oauthService := oauth.NewService(
+						oauth.ServiceConfig{
+							Repo:          gothRepository,
+							ProviderIndex: providerIndex,
+						},
+					)
+
+					webServerConf.OAuthService = oauthService
+
+					// New web server
+					httpServer := server.NewHTTPService(webServerConf)
+					httpServer.Start()
 					return nil
 				},
 			},
@@ -121,7 +136,7 @@ func main() {
 					twitterShareRepo := share.NewTwitterShareRepository(twitterConfig)
 
 					// New share service
-					shareService := share.NewService(twitterShareRepo)
+					shareService := share.NewShareService(twitterShareRepo)
 					err = shareService.ShareArticle(article)
 					if err != nil {
 						return fmt.Errorf("Couldn't share article: %s", err)

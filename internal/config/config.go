@@ -9,8 +9,14 @@ import (
 
 // Config is a minimal configuration for this utility
 type Config struct {
-	ServerPort int               `yaml:"server_port"`
-	Identities []entity.Identity `yaml:"identities"`
+	ServerPort int                       `yaml:"server_port"`
+	Identities []entity.IdentityProvider `yaml:"identities"`
+	JWT        JWTConfig                 `yaml:"jwt_config"`
+}
+
+type JWTConfig struct {
+	Secret    string `yaml:"secret"`
+	Algorithm string `yaml:"algorithm"`
 }
 
 func Load(file string) (*Config, error) {
@@ -25,6 +31,5 @@ func Load(file string) (*Config, error) {
 	if err = yaml.Unmarshal(bytes, &c); err != nil {
 		return nil, err
 	}
-
 	return &c, nil
 }

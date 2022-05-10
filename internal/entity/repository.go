@@ -9,8 +9,8 @@ import (
 )
 
 type IdentityRepository interface {
-	Add(Identity) error
-	GetByProvider(string) (Identity, error)
+	Add(IdentityProvider) error
+	GetByProvider(string) (IdentityProvider, error)
 	Save() error
 	Load() error
 }
@@ -18,28 +18,28 @@ type IdentityRepository interface {
 // FileIdentityRepository implements IdentityRepository interface
 type FileIdentityRepository struct {
 	BasePath   string
-	identities []Identity
+	identities []IdentityProvider
 }
 
 func NewFileIdentityRepo(path string) *FileIdentityRepository {
 	return &FileIdentityRepository{
 		BasePath:   path,
-		identities: make([]Identity, 0),
+		identities: make([]IdentityProvider, 0),
 	}
 }
 
-func (fr *FileIdentityRepository) Add(id Identity) error {
+func (fr *FileIdentityRepository) Add(id IdentityProvider) error {
 	fr.identities = append(fr.identities, id)
 	return nil
 }
 
-func (fr *FileIdentityRepository) GetByProvider(provider string) (Identity, error) {
+func (fr *FileIdentityRepository) GetByProvider(provider string) (IdentityProvider, error) {
 	for _, id := range fr.identities {
 		if id.Provider == provider {
 			return id, nil
 		}
 	}
-	return Identity{}, fmt.Errorf("Couldn't find identity")
+	return IdentityProvider{}, fmt.Errorf("Couldn't find identity")
 }
 
 func (fr *FileIdentityRepository) Save() error {

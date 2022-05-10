@@ -57,11 +57,11 @@ type LinkedinUGCSharePost struct {
 
 // LinkedinShareRepository implements share.Repository
 type LinkedinShareRepository struct {
-	identity entity.Identity
+	identity entity.IdentityProvider
 	client   *http.Client
 }
 
-func NewLinkedinShareRepository(identity entity.Identity) *LinkedinShareRepository {
+func NewLinkedinShareRepository(identity entity.IdentityProvider) *LinkedinShareRepository {
 	return &LinkedinShareRepository{
 		identity: identity,
 		client:   &http.Client{},
@@ -88,7 +88,7 @@ func (l *LinkedinShareRepository) createNewPost(article entity.ArticleShare) *Li
 
 	// Create UGC share post
 	sharePost := LinkedinUGCSharePost{}
-	sharePost.Author = fmt.Sprintf("urn:li:person:%s", l.identity.ID)
+	sharePost.Author = fmt.Sprintf("urn:li:person:%s", l.identity.UserID)
 	sharePost.LifecycleState = "PUBLISHED"
 	sharePost.SpecificContent.ShareContent = shareContent
 	sharePost.Visibility = struct {

@@ -8,19 +8,25 @@ import (
 
 type Service interface {
 	ShareArticle(entity.ArticleShare) error
+	ShareComment(entity.CommentShare) error
 }
 
-type service struct {
+type shareService struct {
 	repo Repository
 }
 
-func NewService(repo Repository) Service {
-	return service{
+func NewShareService(repo Repository) Service {
+	return shareService{
 		repo: repo,
 	}
 }
 
 // ShareArticle shares an article using the specified repository
-func (s service) ShareArticle(article entity.ArticleShare) error {
+func (s shareService) ShareArticle(article entity.ArticleShare) error {
 	return s.repo.ShareArticle(context.Background(), article)
+}
+
+// TODO: Implement ShareComment ...
+func (s shareService) ShareComment(comment entity.CommentShare) error {
+	return nil
 }
