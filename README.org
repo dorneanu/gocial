@@ -2,6 +2,9 @@
 
 * To implement
 ** Add basic web API to interact with Linkedin API
+** JWT
+*** Make sure secret key is also available in the service / goth repository
+** 
 * Resources
 ** https://github.com/johnaoss/linkedin-api
 *** Has to be ported to v2
@@ -9,6 +12,180 @@
 ** [[https://stackoverflow.com/questions/64514954/lsp-mode-for-go-erring-out-with-no-views-in-session][regarding LSP mode with golang]]
 ** https://github.com/dexidp/dex/blob/master/examples/example-app/main.go
 ** [[https://www.loginradius.com/blog/async/twitter-authentication-with-golang-and-goth/][Twitter Authentication with Golang and Goth]]
+** [[https://github.com/markbates/goth/issues/310][How to use JWT with goth?]]
 ** Twitter
 *** Authentication
 - [[https://developer.twitter.com/en/docs/authentication/oauth-1-0a][OAuth 1.0a User Context]]
+** Templating
+- https://github.com/labstack/echo/issues/2139
+- https://lets-go.alexedwards.net/sample/02.07-html-templating-and-inheritance.html
+* Testing
+
+#+begin_src verb :wrap src ob-verb-response
+GET http://127.0.0.1:3000/auth/twitter
+#+end_src
+
+#+RESULTS:
+#+begin_src ob-verb-response
+HTTP/1.1 200 OK
+ml: A
+att: 1-MnQb5XPpcACMhqUwyF66wg752Cg2QV1LsMXl88sc
+date: Mon, 09 May 2022 07:58:39 GMT
+pragma: no-cache
+server: tsa_o
+status: 200 OK
+expires: Tue, 31 Mar 1981 05:00:00 GMT
+set-cookie: fm=0; Max-Age=0; Expires=Mon, 09 May 2022 07:58:39 GMT; Path=/; Domain=.twitter.com; Secure; HTTPOnly
+set-cookie: _twitter_sess=BAh7CSIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCM1K0qeAAToMY3NyZl9p%250AZCIlZDFlMjFkYTc1Y2FkYWU5OGFhYzg0NWQ5YzM4Nzk1ZDg6B2lkIiVkYjU3%250ANmMyZDRhMTMzNjZjNDNjMTFkZWYzNDYwNDE1MA%253D%253D--8bc1c5ab94a131637aec5865ac4e91eebaf87004; Path=/; Domain=.twitter.com; Secure; HTTPOnly
+content-type: text/html;charset=utf-8
+cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+last-modified: Mon, 09 May 2022 07:58:39 GMT
+x-transaction: bb762bc548ddb02f
+content-length: 2486
+x-frame-options: SAMEORIGIN
+x-ua-compatible: IE=edge,chrome=1
+x-xss-protection: 0
+x-content-type-options: nosniff
+content-security-policy: default-src 'none'; connect-src 'self'; font-src https://abs.twimg.com https://abs-0.twimg.com data:; frame-src 'self' twitter:; img-src https://abs.twimg.com https://*.twimg.com https://pbs.twimg.com data:; media-src 'none'; object-src 'none'; script-src https://abs.twimg.com https://abs-0.twimg.com https://twitter.com https://mobile.twitter.com; style-src https://abs.twimg.com https://abs-0.twimg.com; report-uri https://twitter.com/i/csp_report?a=NVQWGYLXFVWG6Z3JNY%3D%3D%3D%3D%3D%3D&ro=false;
+x-twitter-response-tags: BouncerCompliant
+strict-transport-security: max-age=631138519
+x-response-time: 252
+x-connection-hash: 823d5ab8c48f066c8e4e5986656d0bab72967dc1b1b94d50e441073c8713e3ff
+
+<!DOCTYPE html>
+<html lang="de"  dir="ltr"
+      class="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+    <title>Twitter / Autorisiere eine Applikation</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="https://abs-0.twimg.com/login/tfw-base.3baf723b92aa68729f921c77ca3e3c1315116392.css">
+    <!--[if (IEMobile) & (lt IE 9)]>
+      <link href="https://abs-0.twimg.com/login/phoenix-iemobile.49b26ac21d4736060188b5b79bbabc69ca8ef790.css" media="screen" rel="stylesheet" type="text/css" />
+    <![endif]-->
+        <meta name="mswebdialog-title" content="Twitter"><meta name="mswebdialog-logo" content="https://abs.twimg.com/favicons/win8-auth-60.png"><meta name="mswebdialog-header-color" content="#202020"><meta name="mswebdialog-newwindowurl" content="*">
+
+
+      <script src="//abs-0.twimg.com/login/base.7ced3ee3ff61dadf91a9c9bd7082adc8f158a360.js" type="text/javascript"></script>
+      <script src="//abs-0.twimg.com/login/authorize_page.c4edf9ccaf94a42b6963991691957aaa827aa56b.js" type="text/javascript"></script>
+  </head>
+
+
+  <body class="oauth write tfw de logged-out    noloki">
+
+    <div id="header" role="banner">
+      <div class="bar">
+        <h1 class="logo">
+          <a class="alternate-context" href="https://twitter.com/home">Twitter</a>
+        </h1>
+
+        <div id="not-logged-in">
+              <a href="https://twitter.com/signup?context=oauth&amp;oauth_token=WPa5xAAAAAAAUC54AAABgKfT1aM" class="register alternate-context">Bei Twitter registrieren</a>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="bd" role="main">
+
+
+
+
+
+    <div class="auth">
+      <h2>gomation Zugriff auf deinen Account gewähren?</h2>
+
+      <div class="app-info" role="content-info" tabindex="0">
+  <h3>
+    <img alt="" class="app-icon" src="https://abs.twimg.com/a/1404172626/images/oauth_application.png" title="gomation">
+    gomation
+  </h3>
+  <dl>
+      <dt class="url">URL der Applikation</dt>
+      <dd class="url">dornea.nu</dd>
+      <dt class="notes">Über diese App</dt>
+      <dd class="notes"><p>gocial twitter application</p></dd>
+
+  </dl>
+</div>
+
+      <form action="https://api.twitter.com/oauth/authorize" id="oauth_form" method="post" target="_self">
+        <div>
+          <input name="authenticity_token" type="hidden" value="f79c812b7dd21c960b7c9381152a220d50538a52">
+          <input name="redirect_after_login" type="hidden" value="https://api.twitter.com/oauth/authorize?oauth_token=WPa5xAAAAAAAUC54AAABgKfT1aM">
+        </div>
+
+        <input id="oauth_token" name="oauth_token" type="hidden" value="WPa5xAAAAAAAUC54AAABgKfT1aM">
+
+          <fieldset class="sign-in">
+  <legend>Auf Twitter anmelden</legend>
+  <div class="row user ">
+    <input aria-required="true" autocapitalize="off" autocorrect="off" autofocus="autofocus" class="text" id="username_or_email" name="session[username_or_email]" type="text" placeholder="Nutzername oder E-Mail" value="">
+  </div>
+  <div class="row password ">
+    <input aria-required="true" class="password text"  id="password" name="session[password]" type="password" placeholder="Passwort" value="">
+  </div>
+  <p>
+    <input type="checkbox" name="remember_me" id="remember" value="1">
+    <label for="remember">Angemeldet bleiben</label>
+    &middot;
+    <a href="https://twitter.com/account/resend_password" class="alternate-context" target="_blank">Passwort vergessen?</a>
+  </p>
+    <input type="hidden" name="ui_metrics" autocomplete="off">
+    <script src="https://twitter.com/i/js_inst?c_name=ui_metrics" async></script>
+</fieldset>
+
+
+        <fieldset class="buttons">
+          <legend>gomation Zugriff auf Deinen Account gewähren?</legend>
+          <input type="submit" value="App autorisieren" class="submit button selected" id="allow">
+
+            <input class="submit button" id="cancel" name="cancel" type="submit" value="Abbrechen">
+
+        </fieldset>
+      </form>
+
+
+<div class="permissions allow">
+  <p><strong>Diese Applikation kann:</strong></p>
+   <ul class="permissions allow">
+      <li>Tweets (auch geschützte Tweets) aus deiner Timeline sowie deine Listen und Sammlungen sehen.</li>
+      <li>Deine Twitter Profilinformationen und Account-Einstellungen sehen.</li>
+      <li>Accounts sehen, denen du folgst oder die du stummgeschaltet und blockiert hast.</li>
+      <li>Accounts für dich folgen und entfolgen.</li>
+      <li>Deine Profil- und Account-Einstellungen aktualisieren.</li>
+      <li>Tweets für dich posten und löschen und für dich mit Tweets interagieren, die andere gepostet haben (z. B. „Gefällt mir“-Markierungen setzen und aufheben, auf einen Tweet antworten oder einen Retweet senden).</li>
+      <li>Listen und Sammlungen für dich erstellen, verwalten und löschen.</li>
+      <li>Accounts für dich stummschalten, blockieren und melden.</li>
+      <li>Direktnachrichten für dich senden und deine Direktnachrichten lesen, verwalten und löschen.</li>
+</ul>
+
+
+</div>
+
+
+
+      <div>
+  <p><small>Mehr über Berechtigungen für Drittanbieter-Apps erfährst du im <a href="https://help.twitter.com/managing-your-account/connect-or-revoke-access-to-third-party-apps" target="_blank">Hilfe-Center</a>.</small></p>
+</div>
+
+
+    </div>
+
+    </div>
+
+
+  <div class="footer" role="navigation"><div id="ft">
+
+
+  <p class="tip">Wir empfehlen, die AGB und die Datenschutzrichtlinien der App zu prüfen, damit du verstehst, wie sie Daten aus deinem Twitter Account nutzt. Den Zugriff einer beliebigen App kannst du im Bereich <a href="https://twitter.com/settings/applications" target="_blank">Apps und Sitzungen</a> deiner Twitter Account-Einstellungen jederzeit widerrufen.</p>
+  <p><small>Wenn du eine App autorisierst, fällt sie weiterhin unter die <a href="https://twitter.com/tos" target="_blank">Allgemeinen Geschäftsbedingungen</a> von Twitter. Insbesondere werden einige Nutzungsinformationen mit Twitter geteilt. Weitere Informationen findest du in unseren <a href="https://twitter.com/privacy" target="_blank">Datenschutzrichtlinien</a>.</small></p>
+
+
+
+  </div></div>
+
+  </body>
+</html>
+#+end_src

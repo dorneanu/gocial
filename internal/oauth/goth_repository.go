@@ -74,6 +74,8 @@ func (r *GothRepository) HandleAuthCallback(c echo.Context) error {
 		Provider:          provider,
 		UserName:          user.Name,
 		UserID:            user.UserID,
+		UserDescription:   user.Description,
+		UserAvatarURL:     user.AvatarURL,
 		AccessToken:       user.AccessToken,
 		AccessTokenSecret: user.AccessTokenSecret,
 		RefreshToken:      user.RefreshToken,

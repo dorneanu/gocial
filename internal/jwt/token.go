@@ -11,6 +11,8 @@ import (
 type JwtCustomClaims struct {
 	UserName          string
 	UserID            string
+	UserDescription   string
+	UserAvatarURL     string
 	Provider          string
 	AccessToken       string
 	AccessTokenSecret string
@@ -30,7 +32,9 @@ func NewToken(id entity.IdentityProvider, signingKey string) (string, error) {
 	claims := &JwtCustomClaims{
 		UserName:          id.UserName,
 		UserID:            id.UserID,
+		UserDescription:   id.UserDescription,
 		Provider:          id.Provider,
+		UserAvatarURL:     id.UserAvatarURL,
 		AccessToken:       id.AccessToken,
 		AccessTokenSecret: id.AccessTokenSecret,
 		RefreshToken:      id.RefreshToken,

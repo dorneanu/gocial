@@ -8,5 +8,11 @@
 
 # end
 
-build:
+build: go-binary tailwind
+
+go-binary:
 	go build -o gomation ./cli/main.go
+
+tailwind:
+	cd server/html && \
+	npx tailwindcss build -i tailwind.css -o static/main.css

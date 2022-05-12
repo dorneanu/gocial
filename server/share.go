@@ -16,7 +16,7 @@ func (h httpServer) registerShareRoutes(routerGroup *echo.Group) {
 }
 
 func (h httpServer) handleShareIndex(c echo.Context) error {
-	return html.ArticlePost(c.Response().Writer, html.PostParams{
+	return c.Render(http.StatusOK, "post", html.PostParams{
 		SendButtonMessage:   "Send article",
 		CancelButtonMessage: "Cancel",
 	})

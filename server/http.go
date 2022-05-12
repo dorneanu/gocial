@@ -1,6 +1,8 @@
 package server
 
 import (
+	"html/template"
+	"io"
 	"net/http"
 
 	"github.com/dorneanu/gomation/internal/oauth"
@@ -9,6 +11,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
+
+type Template struct {
+	templates *template.Template
+}
+
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+}
 
 // HTTPServerConfig holds information how to run the HTTP server
 type HTTPServerConfig struct {
@@ -46,8 +56,12 @@ func (h httpServer) Start() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Create index
+	// Setup HTML templating
+	e.Renderer = html.RegisterTemplates()
+
+	// Create general routes
 	e.GET("/", h.handleIndex)
+	e.GET("/about/", h.handleAbout)
 
 	// Create routing group for OAuth authentication
 	authGroup := e.Group("/auth")
@@ -67,7 +81,9 @@ func (h httpServer) Start() {
 
 // handleIndex takes care of GET "/"
 func (h httpServer) handleIndex(c echo.Context) error {
-	return html.Index(c.Response().Writer, html.IndexParams{
-		ProviderIndex: h.authService.ProviderIndex(),
-	})
+	return c.Render(http.StatusOK, "index", nil)
+}
+
+func (h httpServer) handleAbout(c echo.Context) error {
+	return c.Render(http.StatusOK, "about", nil)
 }

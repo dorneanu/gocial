@@ -1,12 +1,35 @@
 <!-- profile.html -->
 {{define "content"}}
 <!-- Show fields jwt.JwtCustomClaims -->
-<div class="profile">
-  <p>Your username: {{.UserName}}</p>
-  <p>Provider: {{.Provider}}</p>
-  <p>ID: {{.UserID}}
-  <p>AccessToken: {{.AccessToken}}</p>
-  <p>AccessTokenSecret: {{.AccessTokenSecret}}</p>
-  <p>RefreshToken: {{.RefreshToken}}</p>
+<div class="grid md:grid-cols-2 gap-8">
+
+  <!-- images - start -->
+  <div class="space-y-4">
+    <div class="bg-gray-100 rounded-lg overflow-hidden relative">
+      <img src={{.UserAvatarURL}} loading="lazy" alt="Victor Dorneanu" class="h-full object-center" />
+    </div>
+  </div>
+  <!-- images - end -->
+
+  <!-- content - start -->
+  <div class="md:py-1">
+    <!-- name - start -->
+    <div class="mb-2 md:mb-3">
+      <span class="inline-block text-gray-500 mb-0.5">{{.Provider}}</span>
+      <h2 class="text-gray-800 text-2xl lg:text-3xl font-bold">{{.UserName}}</h2>
+    </div>
+    <!-- name - end -->
+
+    <!-- description - start -->
+    <div class="mt-10 md:mt-16 lg:mt-20">
+      <div class="text-gray-800 text-lg font-semibold mb-3">Description</div>
+
+      <p class="text-gray-500">
+        {{.UserDescription}}
+      </p>
+    </div>
+    <!-- description - end -->
+  </div>
+  <!-- content - end -->
 </div>
 {{end}}

@@ -33,7 +33,7 @@ func (h httpServer) registerAuthRoutes(routerGroup *echo.Group) {
 
 // handleOAuthIndex handles index page for OAuth workflow
 func (h httpServer) handleOAuthIndex(c echo.Context) error {
-	return html.Index(c.Response().Writer, html.IndexParams{
+	return c.Render(http.StatusOK, "index", html.IndexParams{
 		ProviderIndex: h.authService.ProviderIndex(),
 	})
 }
@@ -42,8 +42,7 @@ func (h httpServer) handleOAuthIndex(c echo.Context) error {
 func (h httpServer) handleOAuthInfo(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*jwtutils.JwtCustomClaims)
-
-	return html.Profile(c.Response().Writer, *claims)
+	return c.Render(http.StatusOK, "profile", *claims)
 }
 
 // handleOAuth handles OAuth workflow

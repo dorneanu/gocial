@@ -9,6 +9,8 @@ type IdentityProvider struct {
 	Provider          string     `yaml:"provider"`
 	UserName          string     `yaml:"name"`
 	UserID            string     `yaml:"id"`
+	UserDescription   string     `yaml:"description"`
+	UserAvatarURL     string     `yaml:"userAvatarURL"`
 	AccessToken       string     `yaml:"accessToken"`
 	AccessTokenSecret string     `yaml:"accessTokenSecret"`
 	RefreshToken      string     `yaml:"refreshToken"`
