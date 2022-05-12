@@ -758,6 +758,10 @@ select {
   height: 1.25rem;
 }
 
+.h-32 {
+  height: 8rem;
+}
+
 .h-10 {
   height: 2.5rem;
 }
@@ -1328,6 +1332,10 @@ select {
     padding-left: 1.5rem;
   }
 
+  .md\:pt-8 {
+    padding-top: 2rem;
+  }
+
   .md\:text-left {
     text-align: left;
   }
@@ -1375,6 +1383,10 @@ select {
 
   .lg\:gap-8 {
     gap: 2rem;
+  }
+
+  .lg\:gap-12 {
+    gap: 3rem;
   }
 
   .lg\:pb-12 {

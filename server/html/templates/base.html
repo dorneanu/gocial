@@ -38,22 +38,29 @@
 
           <!-- nav - start -->
           <nav class="hidden lg:flex gap-12">
+            {{if eq .Active "index" }}
             <a href="/" class="text-indigo-500 text-lg font-semibold">Home</a>
-            <a
-              href="/auth/info"
-              class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
-              >Auth</a
-            >
-            <a
-              href="/share/"
-              class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
-              >Share</a
-            >
-            <a
-              href="/about/"
-              class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
-              >About</a
-            >
+            {{else}}
+            <a href="/" class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100">Home</a>
+            {{end}}
+
+            {{if eq .Active "authInfo" }}
+            <a href="/auth/" class="text-indigo-500 text-lg font-semibold">Auth</a>
+            {{else}}
+            <a href="/auth/" class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100">Auth</a>
+            {{end}}
+
+            {{if eq .Active "shareIndex" }}
+            <a href="/share/" class="text-indigo-500 text-lg font-semibold">Share</a>
+            {{else}}
+            <a href="/share/" class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100">Share</a>
+            {{end}}
+
+            {{if eq .Active "about" }}
+            <a href="/about/" class="text-indigo-500 text-lg font-semibold">About</a>
+            {{else}}
+            <a href="/about/" class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100">About</a>
+            {{end}}
           </nav>
           <!-- nav - end -->
 

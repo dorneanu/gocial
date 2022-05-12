@@ -33,7 +33,7 @@ func (h httpServer) registerAuthRoutes(routerGroup *echo.Group) {
 
 // handleOAuthIndex handles index page for OAuth workflow
 func (h httpServer) handleOAuthIndex(c echo.Context) error {
-	return c.Render(http.StatusOK, "index", html.IndexParams{
+	return c.Render(http.StatusOK, "authIndex", html.AuthIndexParams{
 		ProviderIndex: h.authService.ProviderIndex(),
 	})
 }

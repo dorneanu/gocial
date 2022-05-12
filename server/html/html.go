@@ -13,6 +13,7 @@ import (
 
 var (
 	//go:embed templates/*
+	//go:embed templates/partials/*
 	Templates embed.FS
 
 	//go:embed static/*
@@ -28,15 +29,22 @@ type TemplateRegistry struct {
 
 // Implement e.Renderer interface
 func (t *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	// Construct data for the template and add name of current template in order to
+	// identify it inside the template (e.g. for adding CSS classes)
+	tmplData := map[string]interface{}{
+		"Active": name,
+		"Data":   data,
+	}
+
 	tmpl, ok := t.templates[name]
 	if !ok {
 		err := errors.New("Template not found -> " + name)
 		return err
 	}
-	return tmpl.ExecuteTemplate(w, baseTemplate, data)
+	return tmpl.ExecuteTemplate(w, baseTemplate, tmplData)
 }
 
-type IndexParams struct {
+type AuthIndexParams struct {
 	ProviderIndex entity.AuthProviderIndex
 }
 
@@ -55,6 +63,7 @@ func RegisterTemplates() *TemplateRegistry {
 	templates := make(map[string]*template.Template)
 	templates["index"] = parse("templates/index.html")
 	templates["about"] = parse("templates/about.html")
+	templates["authIndex"] = parse("templates/auth/index.html")
 	templates["authInfo"] = parse("templates/auth/info.html")
 	templates["shareIndex"] = parse("templates/share/index.html")
 
