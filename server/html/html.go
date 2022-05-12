@@ -18,10 +18,8 @@ var (
 	//go:embed static/*
 	StaticContent embed.FS
 
-	profile   = parse("templates/profile.html")
-	index     = parse("templates/index.html")
-	post      = parse("templates/post.html")
-	AboutPage = parse("templates/about.html")
+	// base template
+	baseTemplate = "base.html"
 )
 
 type TemplateRegistry struct {
@@ -35,21 +33,21 @@ func (t *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c 
 		err := errors.New("Template not found -> " + name)
 		return err
 	}
-	return tmpl.ExecuteTemplate(w, "layout.html", data)
+	return tmpl.ExecuteTemplate(w, baseTemplate, data)
 }
 
 type IndexParams struct {
 	ProviderIndex entity.AuthProviderIndex
 }
 
-type PostParams struct {
+type SharePostParams struct {
 	SendButtonMessage   string
 	CancelButtonMessage string
 }
 
 func parse(file string) *template.Template {
 	return template.Must(
-		template.New("layout.html").ParseFS(Templates, "templates/layout.html", file))
+		template.New(baseTemplate).ParseFS(Templates, "templates/"+baseTemplate, file))
 }
 
 // registerTemplates sets up html templating system
@@ -57,8 +55,8 @@ func RegisterTemplates() *TemplateRegistry {
 	templates := make(map[string]*template.Template)
 	templates["index"] = parse("templates/index.html")
 	templates["about"] = parse("templates/about.html")
-	templates["profile"] = parse("templates/profile.html")
-	templates["post"] = parse("templates/post.html")
+	templates["authInfo"] = parse("templates/auth/info.html")
+	templates["shareIndex"] = parse("templates/share/index.html")
 
 	return &TemplateRegistry{
 		templates: templates,

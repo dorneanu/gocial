@@ -42,7 +42,7 @@ func (h httpServer) handleOAuthIndex(c echo.Context) error {
 func (h httpServer) handleOAuthInfo(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*jwtutils.JwtCustomClaims)
-	return c.Render(http.StatusOK, "profile", *claims)
+	return c.Render(http.StatusOK, "authInfo", *claims)
 }
 
 // handleOAuth handles OAuth workflow
