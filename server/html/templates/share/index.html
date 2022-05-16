@@ -1,18 +1,82 @@
 {{define "content"}}
-<div class="editor flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg">
-  <input class="title bg-gray-100 border border-gray-300 p-2 mb-6 outline-none" spellcheck="false" placeholder="Title" type="text">
-  <input class="description bg-gray-100 sec p-3 h-10 border border-gray-300 outline-none" spellcheck="false" placeholder="Describe everything about this post here"></input>
-  <input class="url bg-gray-100 p-3 h-10 border border-gray-300 outline-none" spellcheck="false" placeholder="Put URL here"></input>
-
-  <!-- icons -->
-  <div class="icons flex text-gray-500 m-2">
-    <div class="count ml-auto text-gray-400 text-xs font-semibold">0/300</div>
-  </div>
-
-  <!-- buttons -->
-  <div class="buttons flex">
-    <div class="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">{{ .CancelButtonMessage }}</div>
-    <div class="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">{{ .SendButtonMessage }}</div>
-  </div>
+<div class="block p-6 rounded-lg shadow-lg bg-white max-w-md">
+  <form action="/api/share" method="POST">
+    <div class="form-group mb-6">
+      <input type="text" class="form-control block
+        w-full
+        px-3
+        py-1.5
+        text-base
+        font-normal
+        text-gray-700
+        bg-white bg-clip-padding
+        border border-solid border-gray-300
+        rounded
+        transition
+        ease-in-out
+        m-0
+        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="url"
+        placeholder="URL">
+    </div>
+    <div class="form-group mb-6">
+      <input type="text" class="form-control block
+        w-full
+        px-3
+        py-1.5
+        text-base
+        font-normal
+        text-gray-700
+        bg-white bg-clip-padding
+        border border-solid border-gray-300
+        rounded
+        transition
+        ease-in-out
+        m-0
+        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="title"
+        placeholder="Title">
+    </div>
+    <div class="form-group mb-6">
+      <textarea
+      class="
+        form-control
+        block
+        w-full
+        px-3
+        py-1.5
+        text-base
+        font-normal
+        text-gray-700
+        bg-white bg-clip-padding
+        border border-solid border-gray-300
+        rounded
+        transition
+        ease-in-out
+        m-0
+        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+      "
+      id="comment"
+      rows="5"
+      placeholder="Comment"
+    ></textarea>
+    </div>
+    <button type="submit" class="
+                  w-full
+                  px-6
+                  py-2.5
+                  bg-blue-600
+                  text-white
+                  font-medium
+                  text-xs
+                  leading-tight
+                  uppercase
+                  rounded
+                  shadow-md
+                  hover:bg-blue-700 hover:shadow-lg
+                  focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+                  active:bg-blue-800 active:shadow-lg
+                  transition
+                  duration-150
+                  ease-in-out">Share article</button>
+  </form>
 </div>
 {{end}}
