@@ -55,7 +55,13 @@ type SharePostParams struct {
 
 func parse(file string) *template.Template {
 	return template.Must(
-		template.New(baseTemplate).ParseFS(Templates, "templates/"+baseTemplate, file))
+		template.New(baseTemplate).ParseFS(
+			Templates,
+			"templates/"+baseTemplate,
+			"templates/partials/*.html",
+			file,
+		),
+	)
 }
 
 // registerTemplates sets up html templating system
