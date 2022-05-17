@@ -1,31 +1,60 @@
 {{ define "navbar" }}
   <nav class="hidden lg:flex gap-12">
      {{if eq .Active "index" }}
-      <a href="/" class="text-indigo-500 text-lg font-semibold">Home</a>
+    <a href="/" class="text-indigo-500 text-lg font-semibold">Home</a>
      {{else}}
-      <a href="/" class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100">Home</a>
+    <a href="/" class="
+            text-gray-600
+            hover:text-indigo-500
+            active:text-indigo-700
+            text-lg
+            font-semibold
+            transition
+            duration-100"
+    >Home</a>
      {{end}}
 
     <a href="/auth/info"
      {{if eq .Active "authInfo" }}
         class="text-indigo-500 text-lg font-semibold"
      {{else}}
-        class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+        class="
+            text-gray-600
+            hover:text-indigo-500
+            active:text-indigo-700
+            text-lg
+            font-semibold
+            transition
+            duration-100"
      {{end}}
-      >Auth</a >
+    >Auth</a >
     <a href="/share/"
      {{if eq .Active "shareIndex" }}
         class="text-indigo-500 text-lg font-semibold"
      {{else}}
-        class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+        class="
+            text-gray-600
+            hover:text-indigo-500
+            active:text-indigo-700
+            text-lg
+            font-semibold
+            transition
+            duration-100"
      {{end}}
-      >Share</a >
+    >Share</a >
     <a href="/about/"
      {{if eq .Active "about" }}
         class="text-indigo-500 text-lg font-semibold"
      {{else}}
-        class="text-gray-600 hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+        class="
+            text-gray-600
+            hover:text-indigo-500
+            active:text-indigo-700
+            text-lg
+            font-semibold
+            transition
+            duration-100"
      {{end}}
-      >About</a >
+    >About</a >
   </nav>
 {{end}}
