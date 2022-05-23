@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gomation/internal/identity"
 	"github.com/dorneanu/gomation/internal/oauth"
 	"github.com/dorneanu/gomation/internal/share"
 	"github.com/dorneanu/gomation/server/html"
@@ -27,21 +29,28 @@ type HTTPServerConfig struct {
 	TokenExpiration int
 	ShareService    share.Service
 	OAuthService    oauth.Service
+	IdentityService identity.Repository
+	ProviderIndex   *entity.AuthProviderIndex
 }
 
 type httpServer struct {
-	conf          HTTPServerConfig
-	authService   oauth.Service
-	shareService  share.Service
-	idContextName string
+	ctx             echo.Context
+	conf            HTTPServerConfig
+	authService     oauth.Service
+	shareService    share.Service
+	identityService identity.Repository
+	providerIndex   *entity.AuthProviderIndex
+	idContextName   string
 }
 
 // NewService returns a new authentication service for different providers
 func NewHTTPService(s HTTPServerConfig) httpServer {
 	return httpServer{
-		conf:         s,
-		authService:  s.OAuthService,
-		shareService: s.ShareService,
+		conf:            s,
+		authService:     s.OAuthService,
+		shareService:    s.ShareService,
+		identityService: s.IdentityService,
+		providerIndex:   s.ProviderIndex,
 		// TODO: Put this into configuration
 		idContextName: "identity-provider",
 	}
@@ -54,6 +63,8 @@ func (h httpServer) Start() {
 
 	// Setup middleware
 	e.Use(middleware.Logger())
+	e.Logger.SetLevel(99)
+	e.Debug = true
 	e.Use(middleware.Recover())
 
 	// Setup HTML templating
@@ -70,6 +81,10 @@ func (h httpServer) Start() {
 	// Create routing group for sharing content
 	shareGroup := e.Group("/share")
 	h.registerShareRoutes(shareGroup)
+
+	// Create routing group for the REST API
+	apiGroup := e.Group("/api")
+	h.registerAPIRoutes(apiGroup)
 
 	// Setup static content
 	staticContentHandler := echo.WrapHandler(http.FileServer(http.FS(html.StaticContent)))

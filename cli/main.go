@@ -8,6 +8,7 @@ import (
 
 	"github.com/dorneanu/gomation/internal/config"
 	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gomation/internal/identity"
 	"github.com/dorneanu/gomation/internal/oauth"
 	"github.com/dorneanu/gomation/internal/share"
 	"github.com/dorneanu/gomation/server"
@@ -69,6 +70,12 @@ func main() {
 					providerIndex := oauth.SetupAuthProviders(oauthConfigs)
 					gothRepository := oauth.NewGothRepository(providerIndex, idRepo, webServerConf.TokenSigningKey)
 
+					// New identity repository
+					cookieIdentityRepo := identity.NewCookieIdentityRepository(&identity.CookieIdentityOptions{
+						BaseCookieName:  "gocial",
+						TokenSigningKey: webServerConf.TokenSigningKey,
+					})
+
 					// New OAuth authentication service service
 					oauthService := oauth.NewService(
 						oauth.ServiceConfig{
@@ -77,7 +84,14 @@ func main() {
 						},
 					)
 
+					// New share service
+					// TODO: Add share repository
+					// shareService := share.NewShareService()
+
 					webServerConf.OAuthService = oauthService
+					webServerConf.IdentityService = cookieIdentityRepo
+					webServerConf.ProviderIndex = &providerIndex
+					// webServerConf.ShareService = shareService
 
 					// New web server
 					httpServer := server.NewHTTPService(webServerConf)

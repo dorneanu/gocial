@@ -23,6 +23,8 @@ type TwitterConfig struct {
 
 func NewTwitterShareRepository(twitterConf *TwitterConfig) *TwitterShareRepository {
 	// Create new twitter client based on the oauth config
+	//
+	// https://developer.twitter.com/en/docs/authentication/oauth-1-0a
 	config := oauth1.NewConfig(twitterConf.ConsumerKey, twitterConf.ConsumerSecret)
 	token := oauth1.NewToken(twitterConf.AccessToken, twitterConf.AccessSecret)
 	httpClient := config.Client(oauth1.NoContext, token)

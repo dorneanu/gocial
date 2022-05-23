@@ -1,34 +1,32 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/dorneanu/gomation/internal/entity"
-	jwtutils "github.com/dorneanu/gomation/internal/jwt"
 	"github.com/dorneanu/gomation/server/html"
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func (h httpServer) registerAuthRoutes(routerGroup *echo.Group) {
 	// setup
-	jwtConfig := middleware.JWTConfig{
-		Claims:      &jwtutils.JwtCustomClaims{},
-		SigningKey:  []byte(h.conf.TokenSigningKey),
-		TokenLookup: "cookie:gocialAuth",
-	}
+	// jwtConfig := middleware.JWTConfig{
+	// 	Claims:      &jwtutils.JwtCustomClaims{},
+	// 	SigningKey:  []byte(h.conf.TokenSigningKey),
+	// 	TokenLookup: "cookie:gocialAuth",
+	// }
 
 	// Setup routes
 	routerGroup.GET("/", h.handleOAuthIndex)
 	routerGroup.GET("/info", h.handleOAuthInfo)
 	routerGroup.GET("/:provider", h.handleOAuth)
 	routerGroup.GET("/callback/:provider", h.handleOAuthCallback)
-	routerGroup.GET("/info",
-		h.handleOAuthInfo,
-		middleware.JWTWithConfig(jwtConfig),
-	)
+	// routerGroup.GET("/info",
+	// 	h.handleOAuthInfo,
+	// 	middleware.JWTWithConfig(jwtConfig),
+	// )
+	routerGroup.GET("/info", h.handleOAuthInfo)
 }
 
 // handleOAuthIndex handles index page for OAuth workflow
@@ -40,9 +38,26 @@ func (h httpServer) handleOAuthIndex(c echo.Context) error {
 
 // handleOAuthInfo shows information about current authentications
 func (h httpServer) handleOAuthInfo(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*jwtutils.JwtCustomClaims)
-	return c.Render(http.StatusOK, "authInfo", *claims)
+	var identityProviders []entity.IdentityProvider
+
+	for _, p := range h.providerIndex.Providers {
+		fmt.Printf("provider: %s\n", p)
+		idProvider, err := h.identityService.GetByProvider(p, c)
+		if err != nil {
+			fmt.Printf("Provider %s not found\n", p)
+			continue
+		}
+		identityProviders = append(identityProviders, idProvider)
+	}
+
+	for _, id := range identityProviders {
+		fmt.Printf("(%s) AccessToken: %s\n", id.Provider, id.AccessToken)
+	}
+
+	// user := c.Get("user").(*jwt.Token)
+	// claims := user.Claims.(*jwtutils.JwtCustomClaims)
+	// return c.Render(http.StatusOK, "authInfo", *claims)
+	return nil
 }
 
 // handleOAuth handles OAuth workflow
@@ -57,30 +72,11 @@ func (h httpServer) handleOAuthCallback(c echo.Context) error {
 		return err
 	}
 
-	// Fetch new identity probvider
-	identProvider := c.Get(h.idContextName).(entity.IdentityProvider)
+	// Fetch new identity provider
+	identityProvider := c.Get(h.idContextName).(entity.IdentityProvider)
 
-	// Create new JWT token
-	jwtToken, err := jwtutils.NewToken(identProvider, h.conf.TokenSigningKey)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": "Cannot generate new JWT token",
-			"error":   err,
-		})
-	}
-
-	// // Send cookie back
-	authCookie := &http.Cookie{
-		Name:     "gocialAuth",
-		Value:    jwtToken,
-		Path:     "/",
-		Expires:  time.Now().Add(36 * time.Hour),
-		MaxAge:   0,
-		Secure:   true,
-		HttpOnly: true,
-		SameSite: 1,
-	}
-	c.SetCookie(authCookie)
+	// Persis new identity provider
+	h.conf.IdentityService.Add(identityProvider, c)
 
 	// TODO: Put /auth/info into configuration
 	return c.Redirect(http.StatusTemporaryRedirect, "/auth/info")
