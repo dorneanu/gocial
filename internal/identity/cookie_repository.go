@@ -7,6 +7,7 @@ import (
 
 	"github.com/dorneanu/gomation/internal/entity"
 	jwtutils "github.com/dorneanu/gomation/internal/jwt"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -54,12 +55,34 @@ func (cr *CookieIdentityRepository) Add(id entity.IdentityProvider, c echo.Conte
 
 // GetByProvider ...
 func (cr *CookieIdentityRepository) GetByProvider(provider string, c echo.Context) (entity.IdentityProvider, error) {
-	_, err := c.Cookie(fmt.Sprintf("%s-%s", cr.baseCookieName, provider))
+	cookie, err := c.Cookie(fmt.Sprintf("%s-%s", cr.baseCookieName, provider))
 	if err != nil {
 		return entity.IdentityProvider{}, fmt.Errorf("Couldn't get cookie for provider: %s", provider)
 	}
-	// TODO: return identity provider
-	return entity.IdentityProvider{}, nil
+
+	// Parse token value
+	token, err := jwt.ParseWithClaims(cookie.Value, &jwtutils.JwtCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(cr.tokenSigningKey), nil
+	})
+
+	// Check if valid
+	if claims, ok := token.Claims.(*jwtutils.JwtCustomClaims); ok && token.Valid {
+		fmt.Printf("%s\n%s\n", claims.UserName, claims.AccessToken)
+		return entity.IdentityProvider{
+			Provider:          claims.Provider,
+			UserName:          claims.UserName,
+			UserID:            claims.UserID,
+			UserDescription:   claims.UserDescription,
+			UserAvatarURL:     claims.UserAvatarURL,
+			AccessToken:       claims.AccessToken,
+			AccessTokenSecret: claims.AccessTokenSecret,
+			RefreshToken:      claims.RefreshToken,
+			ExpiresAt:         &time.Time{},
+		}, nil
+	} else {
+		return entity.IdentityProvider{}, fmt.Errorf("Couldn't validate JWT token: %s", err)
+	}
+
 }
 
 // Load
