@@ -67,7 +67,6 @@ func (cr *CookieIdentityRepository) GetByProvider(provider string, c echo.Contex
 
 	// Check if valid
 	if claims, ok := token.Claims.(*jwtutils.JwtCustomClaims); ok && token.Valid {
-		fmt.Printf("%s\n%s\n", claims.UserName, claims.AccessToken)
 		return entity.IdentityProvider{
 			Provider:          claims.Provider,
 			UserName:          claims.UserName,

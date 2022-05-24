@@ -3,6 +3,9 @@
 <!-- Show fields jwt.JwtCustomClaims -->
 <div class="grid md:grid-cols-2 gap-8">
 
+   <!-- TODO: Check if array/slice empty. If true, then show buttons for login -->
+  {{ range .Data }}
+
   <!-- images - start -->
   <div class="space-y-4">
     <div class="bg-gray-100 rounded-lg overflow-hidden relative">
@@ -30,6 +33,7 @@
     </div>
     <!-- description - end -->
   </div>
+  {{ end }}
   <!-- content - end -->
 </div>
 {{end}}

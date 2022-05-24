@@ -41,7 +41,7 @@ func (h httpServer) handleOAuthInfo(c echo.Context) error {
 	var identityProviders []entity.IdentityProvider
 
 	for _, p := range h.providerIndex.Providers {
-		fmt.Printf("provider: %s\n", p)
+		// Try to fetch an identity provider from the identity service
 		idProvider, err := h.identityService.GetByProvider(p, c)
 		if err != nil {
 			fmt.Printf("Provider %s not found\n", p)
@@ -50,14 +50,7 @@ func (h httpServer) handleOAuthInfo(c echo.Context) error {
 		identityProviders = append(identityProviders, idProvider)
 	}
 
-	for _, id := range identityProviders {
-		fmt.Printf("(%s) AccessToken: %s\n", id.Provider, id.AccessToken)
-	}
-
-	// user := c.Get("user").(*jwt.Token)
-	// claims := user.Claims.(*jwtutils.JwtCustomClaims)
-	// return c.Render(http.StatusOK, "authInfo", *claims)
-	return nil
+	return c.Render(http.StatusOK, "authInfo", identityProviders)
 }
 
 // handleOAuth handles OAuth workflow
