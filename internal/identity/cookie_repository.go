@@ -43,7 +43,7 @@ func (cr *CookieIdentityRepository) Add(id entity.IdentityProvider, c echo.Conte
 		Name:     fmt.Sprintf("%s-%s", cr.baseCookieName, id.Provider),
 		Value:    jwtToken,
 		Path:     "/",
-		Expires:  time.Now().Add(36 * time.Hour),
+		Expires:  time.Now().Add(56 * time.Hour),
 		MaxAge:   0,
 		Secure:   true,
 		HttpOnly: true,

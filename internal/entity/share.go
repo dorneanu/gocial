@@ -2,9 +2,9 @@ package entity
 
 // ArticleShare is an article to be shared via the share service
 type ArticleShare struct {
-	URL     string
-	Title   string
-	Comment string
+	URL     string `json:"url" form:"url" validate:"required"`
+	Title   string `json:"title" form:"title" validate:"required"`
+	Comment string `json:"comment" form:"comment" validate:"required"`
 }
 
 // CommentShare is a comment to be shared via the share service

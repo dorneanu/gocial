@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/dorneanu/gomation/internal/entity"
@@ -16,7 +17,11 @@ type CustomValidator struct {
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {
-	return echo.NewHTTPError(http.StatusInternalServerError, cv.validator.Struct(i).Error())
+	if err := cv.validator.Struct(i); err != nil {
+		// Optionally, you could return the error to give each route more control over the status code
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return nil
 }
 
 // registerAPIRoutes ...
@@ -27,20 +32,39 @@ func (h httpServer) registerAPIRoutes(routerGroup *echo.Group) {
 
 // handleAPIShare ...
 func (h httpServer) handleAPIShare(c echo.Context) error {
-	// Set validator
-	c.Echo().Validator = &CustomValidator{
-		validator: validator.New(),
-	}
+	fmt.Print("API Share")
+
+	// Custom validator
+	c.Echo().Validator = &CustomValidator{validator: validator.New()}
 
 	// Create new article share
-	s := new(entity.ArticleShare)
+	articleShare := new(entity.ArticleShare)
 
 	// Validate structure
-	if err := c.Bind(s); err != nil {
+	if err := c.Bind(articleShare); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if err := c.Validate(s); err != nil {
+
+	if err := c.Validate(articleShare); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, s)
+
+	// Get available identity providers
+	for _, ip := range h.availableIdentityProviders(c) {
+		shareRepo, err := h.shareService.GetShareRepo(ip)
+		if err != nil {
+			fmt.Printf("Error: %s\n", err)
+			continue
+		}
+
+		// Share article
+		if err := h.shareService.ShareArticle(*articleShare, shareRepo); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+				"error":    err.Error(),
+				"provider": ip.Provider,
+			})
+		}
+	}
+
+	return c.JSON(http.StatusOK, articleShare)
 }

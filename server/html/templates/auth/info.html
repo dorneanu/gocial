@@ -4,6 +4,8 @@
 <div class="grid md:grid-cols-2 gap-8">
 
    <!-- TODO: Check if array/slice empty. If true, then show buttons for login -->
+  {{ if not .Data }} <p> bla</p> {{end}}
+
   {{ range .Data }}
 
   <!-- images - start -->

@@ -38,19 +38,7 @@ func (h httpServer) handleOAuthIndex(c echo.Context) error {
 
 // handleOAuthInfo shows information about current authentications
 func (h httpServer) handleOAuthInfo(c echo.Context) error {
-	var identityProviders []entity.IdentityProvider
-
-	for _, p := range h.providerIndex.Providers {
-		// Try to fetch an identity provider from the identity service
-		idProvider, err := h.identityService.GetByProvider(p, c)
-		if err != nil {
-			fmt.Printf("Provider %s not found\n", p)
-			continue
-		}
-		identityProviders = append(identityProviders, idProvider)
-	}
-
-	return c.Render(http.StatusOK, "authInfo", identityProviders)
+	return c.Render(http.StatusOK, "authInfo", h.availableIdentityProviders(c))
 }
 
 // handleOAuth handles OAuth workflow
@@ -73,4 +61,20 @@ func (h httpServer) handleOAuthCallback(c echo.Context) error {
 
 	// TODO: Put /auth/info into configuration
 	return c.Redirect(http.StatusTemporaryRedirect, "/auth/info")
+}
+
+// availableIdentityProviders returns a list of all available identity providers
+func (h httpServer) availableIdentityProviders(c echo.Context) []entity.IdentityProvider {
+	var identityProviders []entity.IdentityProvider
+
+	for _, p := range h.providerIndex.Providers {
+		// Try to fetch an identity provider from the identity service
+		idProvider, err := h.identityService.GetByProvider(p, c)
+		if err != nil {
+			fmt.Printf("Provider %s not found\n", p)
+			continue
+		}
+		identityProviders = append(identityProviders, idProvider)
+	}
+	return identityProviders
 }

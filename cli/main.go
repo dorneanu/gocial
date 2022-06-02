@@ -64,6 +64,7 @@ func main() {
 					}
 
 					// New identity repository
+					// TODO: Is this still needed
 					idRepo := entity.NewFileIdentityRepo("./auth.yaml")
 
 					// New goth auth repository
@@ -85,13 +86,10 @@ func main() {
 					)
 
 					// New share service
-					// TODO: Add share repository
-					// shareService := share.NewShareService()
-
 					webServerConf.OAuthService = oauthService
 					webServerConf.IdentityService = cookieIdentityRepo
 					webServerConf.ProviderIndex = &providerIndex
-					// webServerConf.ShareService = shareService
+					webServerConf.ShareService = share.NewShareService()
 
 					// New web server
 					httpServer := server.NewHTTPService(webServerConf)
@@ -122,39 +120,39 @@ func main() {
 				},
 				Usage: "Post some article",
 				Action: func(c *cli.Context) error {
-					authConf := entity.NewFileIdentityRepo("./auth.yaml")
-					err := authConf.Load()
-					if err != nil {
-						return fmt.Errorf("Couldn't load auth details: %s", err)
-					}
+					// authConf := entity.NewFileIdentityRepo("./auth.yaml")
+					// err := authConf.Load()
+					// if err != nil {
+					// 	return fmt.Errorf("Couldn't load auth details: %s", err)
+					// }
 
-					article := entity.ArticleShare{
-						URL:     postURL,
-						Title:   postTitle,
-						Comment: postComment,
-					}
+					// article := entity.ArticleShare{
+					// 	URL:     postURL,
+					// 	Title:   postTitle,
+					// 	Comment: postComment,
+					// }
 
-					id, err := authConf.GetByProvider("twitter")
-					if err != nil {
-						return fmt.Errorf("Couldn't get identity: %s", err)
-					}
+					// id, err := authConf.GetByProvider("twitter")
+					// if err != nil {
+					// 	return fmt.Errorf("Couldn't get identity: %s", err)
+					// }
 
 					// linkedShareRepo := share.NewLinkedinShareRepository(id)
 					// oauth2 configures a client that uses app credentials to keep a fresh token
-					twitterConfig := &share.TwitterConfig{
-						ConsumerKey:    os.Getenv("TWITTER_CLIENT_KEY"),
-						ConsumerSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
-						AccessToken:    id.AccessToken,
-						AccessSecret:   id.AccessTokenSecret,
-					}
-					twitterShareRepo := share.NewTwitterShareRepository(twitterConfig)
+					// twitterConfig := &share.TwitterConfig{
+					// 	ConsumerKey:    os.Getenv("TWITTER_CLIENT_KEY"),
+					// 	ConsumerSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
+					// 	AccessToken:    id.AccessToken,
+					// 	AccessSecret:   id.AccessTokenSecret,
+					// }
+					// twitterShareRepo := share.NewTwitterShareRepository(twitterConfig)
 
 					// New share service
-					shareService := share.NewShareService(twitterShareRepo)
-					err = shareService.ShareArticle(article)
-					if err != nil {
-						return fmt.Errorf("Couldn't share article: %s", err)
-					}
+					// shareService := share.NewShareService(twitterShareRepo)
+					// err = shareService.ShareArticle(article)
+					// if err != nil {
+					// 	return fmt.Errorf("Couldn't share article: %s", err)
+					// }
 					return nil
 				},
 			},

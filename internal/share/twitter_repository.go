@@ -9,6 +9,9 @@ import (
 	"github.com/dorneanu/gomation/internal/entity"
 )
 
+// https://developer.twitter.com/en/docs/counting-characters
+const twitterMaxCharacters = 280
+
 // TwitterShareRepository implements share.Repository
 type TwitterShareRepository struct {
 	client *twitter.Client
@@ -39,9 +42,16 @@ func NewTwitterShareRepository(twitterConf *TwitterConfig) *TwitterShareReposito
 
 // ShareArticle sends a new Tweet
 func (t *TwitterShareRepository) ShareArticle(ctx context.Context, article entity.ArticleShare) error {
+	// Compose post
+	post := fmt.Sprintf("%s %s", article.Comment, article.URL)
+
+	// Check post length
+	if len(post) > twitterMaxCharacters {
+		return fmt.Errorf("Post max characters exceeded: %d (allowed: %d)", len(post), twitterMaxCharacters)
+	}
+
 	// Send a Tweet
-	tweet, _, err := t.client.Statuses.Update(fmt.Sprintf("%s %s", article.Comment, article.URL), nil)
-	fmt.Printf("Tweet: %+v\n", tweet)
+	_, _, err := t.client.Statuses.Update(post, nil)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 	}
