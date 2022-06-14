@@ -1,0 +1,49 @@
+{{ define "login" }}
+<form class="max-w-lg border rounded-lg mx-auto">
+  <div class="flex flex-col gap-4 p-4 md:p-8">
+    You can connect gocial with following services.
+    <div class="flex justify-center items-center relative">
+      <span class="h-px bg-gray-300 absolute inset-x-0"></span>
+      <span class="bg-white text-gray-400 text-sm relative px-4"
+        >Log in with social</span
+      >
+    </div>
+    <a
+      href="/auth/linkedin"
+      class="flex justify-center items-center bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus-visible:ring ring-blue-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 gap-2 px-8 py-3"
+    >
+      Continue with LinkedIn
+    </a>
+    <a
+      href="/auth/twitter"
+      class="flex justify-center items-center bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus-visible:ring ring-blue-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 gap-2 px-8 py-3"
+    >
+      Continue with Twitter
+    </a>
+  </div>
+
+  <div class="flex justify-center items-center bg-gray-100 p-4">
+    <p class="text-gray-500 text-sm text-center">
+      Don't have an account?
+      <a
+        href="#"
+        class="text-indigo-500 hover:text-indigo-600 active:text-indigo-700 transition duration-100"
+        >Register</a
+      >
+    </p>
+  </div>
+</form>
+<!-- <ul class="m-2">
+     {{range $key, $value:= .ProviderIndex.Providers}}
+     <li class="h-50">
+     <a href="/auth/{{$value}}">
+     <button class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg">
+     {{index $.ProviderIndex.ProvidersMap $value}}
+     </button>
+     </a>
+     </li>
+     {{end}}
+     </ul>
+     </div>
+-->
+{{end}}
