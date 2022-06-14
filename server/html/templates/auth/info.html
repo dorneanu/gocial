@@ -1,23 +1,30 @@
 <!-- profile.html -->
 {{define "content"}}
 <!-- Show fields jwt.JwtCustomClaims -->
-<div class="grid md:grid-cols-2 gap-8">
+  {{ if not .Data }}
+    <div class="w-full">
+      {{ template "login" }}
+    </div>
+  {{end}}
+
+<div class="grid md:grid-cols-6  gap-4">
 
    <!-- TODO: Check if array/slice empty. If true, then show buttons for login -->
-  {{ if not .Data }} <p> bla</p> {{end}}
 
   {{ range .Data }}
 
   <!-- images - start -->
-  <div class="space-y-4">
-    <div class="bg-gray-100 rounded-lg overflow-hidden relative">
-      <img src={{.UserAvatarURL}} loading="lazy" alt="Victor Dorneanu" class="h-full object-center" />
+  <div class="space-y-4 col-span-1">
+    {{ if .UserAvatarURL }}
+    <div class="bg-white-100 rounded-lg overflow-hidden relative">
+      <img src={{.UserAvatarURL}} loading="lazy" alt={{.UserName}} class="w-full object-center" />
     </div>
+    {{ end }}
   </div>
   <!-- images - end -->
 
   <!-- content - start -->
-  <div class="md:py-1">
+  <div class="md:py-1 col-span-5">
     <!-- name - start -->
     <div class="mb-2 md:mb-3">
       <span class="inline-block text-gray-500 mb-0.5">{{.Provider}}</span>
@@ -25,6 +32,8 @@
     </div>
     <!-- name - end -->
 
+
+    {{ if .UserDescription }}
     <!-- description - start -->
     <div class="mt-10 md:mt-16 lg:mt-20">
       <div class="text-gray-800 text-lg font-semibold mb-3">Description</div>
@@ -34,6 +43,7 @@
       </p>
     </div>
     <!-- description - end -->
+    {{ end }}
   </div>
   {{ end }}
   <!-- content - end -->
