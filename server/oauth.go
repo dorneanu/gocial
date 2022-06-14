@@ -20,6 +20,7 @@ func (h httpServer) registerAuthRoutes(routerGroup *echo.Group) {
 	// Setup routes
 	routerGroup.GET("/", h.handleOAuthIndex)
 	routerGroup.GET("/info", h.handleOAuthInfo)
+	routerGroup.GET("/logout", h.handleOAuthLogout)
 	routerGroup.GET("/:provider", h.handleOAuth)
 	routerGroup.GET("/callback/:provider", h.handleOAuthCallback)
 	// routerGroup.GET("/info",
@@ -77,4 +78,13 @@ func (h httpServer) availableIdentityProviders(c echo.Context) []entity.Identity
 		identityProviders = append(identityProviders, idProvider)
 	}
 	return identityProviders
+}
+
+// handleOAuthLogout ...
+func (h httpServer) handleOAuthLogout(c echo.Context) error {
+	// Delete all OAuth related cookies
+	for _, p := range h.providerIndex.Providers {
+		h.identityService.Delete(p, c)
+	}
+	return c.Redirect(http.StatusTemporaryRedirect, "/")
 }

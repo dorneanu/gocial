@@ -84,6 +84,19 @@ func (cr *CookieIdentityRepository) GetByProvider(provider string, c echo.Contex
 
 }
 
+// Delete ...
+func (cr *CookieIdentityRepository) Delete(provider string, c echo.Context) error {
+	cookie := &http.Cookie{
+		Name:     fmt.Sprintf("%s-%s", cr.baseCookieName, provider),
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
+	c.SetCookie(cookie)
+	return nil
+}
+
 // Load
 func (cr *CookieIdentityRepository) Load() error {
 	return nil

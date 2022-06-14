@@ -9,6 +9,7 @@ type Repository interface {
 	// TODO: Get rid of dependency to echo.Context
 	Add(entity.IdentityProvider, echo.Context) error
 	GetByProvider(string, echo.Context) (entity.IdentityProvider, error)
+	Delete(string, echo.Context) error
 	Save() error
 	Load() error
 }
