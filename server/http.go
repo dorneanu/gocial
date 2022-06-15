@@ -62,7 +62,7 @@ func (h httpServer) Start(e *echo.Echo) {
 	// Setup middleware
 	e.Use(middleware.Logger())
 	e.Logger.SetLevel(99)
-	e.Debug = true
+	// e.Debug = true
 	e.Use(middleware.Recover())
 
 	// Setup HTML templating

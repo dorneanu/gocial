@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -18,12 +17,16 @@ import (
 )
 
 var (
-	echoLambda *echoadapter.EchoLambdaV2
+	// echoLambda *echoadapter.EchoLambdaV2
+	echoLambda *echoadapter.EchoLambda
 )
+
+// func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+// 	return echoLambda.ProxyWithContext(ctx, req)
+// }
 
 func init() {
 	// stdout and stderr are sent to AWS CloudWatch Logs
-	log.Printf("echo cold start")
 	e := echo.New()
 
 	webServerConf := server.HTTPServerConfig{
@@ -78,12 +81,23 @@ func init() {
 	// New web server
 	httpServer := server.NewHTTPService(webServerConf)
 	httpServer.Start(e)
-	echoLambda = echoadapter.NewV2(e)
-}
 
-func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	// e.GET("/bla", func(c echo.Context) error {
+	// 	return c.String(http.StatusOK, "Alles klar")
+	// })
+
+	// e.GET("/kuku", func(c echo.Context) error {
+	// 	return c.JSON(200, &echo.Map{"data": "Hello from Echo & mongoDB"})
+	// })
+
+	// echoLambda = echoadapter.NewV2(e)
+	echoLambda = echoadapter.New(e)
+
+}
+func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	return echoLambda.ProxyWithContext(ctx, req)
 }
+
 func main() {
-	lambda.Start(Handler)
+	lambda.Start(handler)
 }
