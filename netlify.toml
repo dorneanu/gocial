@@ -9,6 +9,21 @@ functions = "/functions"
   to = "/.netlify/functions/lambda/:splat"
   status = 200
 
+[[redirects]]
+  from = "/static/main.css"
+  to = "/.netlify/functions/lambda/static/main.css"
+  status = 200
+
+[[redirects]]
+  from = "/auth/info"
+  to = "/.netlify/functions/lambda/auth/info"
+  status = 200
+
+[[redirects]]
+  from = "/share/"
+  to = "/.netlify/functions/lambda/share"
+  status = 200
+
 [build.environment]
 GO_VERSION = "1.17.2"
 GO111MODULE = "on"
