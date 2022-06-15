@@ -5,7 +5,7 @@ publish = "/public"
 functions = "/functions"
 
 [[redirects]]
-  from = "/api/*"
+  from = "/*"
   to = "/.netlify/functions/lambda/:splat"
   status = 200
 
