@@ -1,0 +1,9 @@
+[build]
+base = "/"
+command = "make netlify"
+publish = "/public"
+functions = "/functions"
+
+[build.environment]
+GO_VERSION = "1.17.2"
+GO111MODULE = "on"

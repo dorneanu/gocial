@@ -12,6 +12,7 @@ import (
 	"github.com/dorneanu/gomation/internal/oauth"
 	"github.com/dorneanu/gomation/internal/share"
 	"github.com/dorneanu/gomation/server"
+	"github.com/labstack/echo/v4"
 	"github.com/urfave/cli/v2"
 )
 
@@ -92,8 +93,13 @@ func main() {
 					webServerConf.ShareService = share.NewShareService()
 
 					// New web server
+					e := echo.New()
 					httpServer := server.NewHTTPService(webServerConf)
-					httpServer.Start()
+					httpServer.Start(e)
+
+					// Start server
+					e.Logger.Fatal(e.Start(webServerConf.ListenAddr))
+
 					return nil
 				},
 			},

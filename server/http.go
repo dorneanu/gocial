@@ -57,9 +57,7 @@ func NewHTTPService(s HTTPServerConfig) httpServer {
 }
 
 // Start starts the HTTP server
-func (h httpServer) Start() {
-	// New echo instance
-	e := echo.New()
+func (h httpServer) Start(e *echo.Echo) {
 
 	// Setup middleware
 	e.Use(middleware.Logger())
@@ -89,9 +87,6 @@ func (h httpServer) Start() {
 	// Setup static content
 	staticContentHandler := echo.WrapHandler(http.FileServer(http.FS(html.StaticContent)))
 	e.GET("/static/*", staticContentHandler)
-
-	// Start server
-	e.Logger.Fatal(e.Start(h.conf.ListenAddr))
 }
 
 // handleIndex takes care of GET "/"
