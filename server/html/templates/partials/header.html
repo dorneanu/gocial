@@ -35,7 +35,7 @@
 
   <button
     type="button"
-    class="inline-flex items-center lg:hidden bg-gray-200 hover:bg-gray-300 focus-visible:ring ring-indigo-300 text-gray-500 active:text-gray-700 text-sm md:text-base font-semibold rounded-lg gap-2 px-2.5 py-2"
+    class="mobile-menu-button inline-flex items-center lg:hidden bg-gray-200 hover:bg-gray-300 focus-visible:ring ring-indigo-300 text-gray-500 active:text-gray-700 text-sm md:text-base font-semibold rounded-lg gap-2 px-2.5 py-2"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -51,6 +51,16 @@
     </svg>
     Menu
   </button>
+  <script>
+    // Grab HTML Elements
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector("#menu");
+
+    // Add Event Listeners
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  </script>
   <!-- buttons - end -->
 </header>
 

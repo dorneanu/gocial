@@ -1,9 +1,20 @@
 {{ define "navbar" }}
-  <nav class="hidden lg:flex gap-12">
-     {{if eq .Active "index" }}
+<div id="menu" class="hidden w-full md:flex md:items-center md:justify-between md:w-auto ">
+  <ul class="
+           text-base text-gray-700
+           pt-4
+           md:flex
+           md:justify-between
+           md:pt-0"
+  >
+    <li>
+    {{if eq .Active "index" }}
     <a href="/" class="text-indigo-500 text-lg font-semibold">Home</a>
      {{else}}
     <a href="/" class="
+            block
+            py-4
+            md:p-4
             text-gray-600
             hover:text-indigo-500
             active:text-indigo-700
@@ -13,12 +24,17 @@
             duration-100"
     >Home</a>
      {{end}}
+    </li>
 
+    <li>
     <a href="/auth/info"
      {{if eq .Active "authInfo" }}
         class="text-indigo-500 text-lg font-semibold"
      {{else}}
         class="
+            block
+            py-4
+            md:p-4
             text-gray-600
             hover:text-indigo-500
             active:text-indigo-700
@@ -27,12 +43,18 @@
             transition
             duration-100"
      {{end}}
-    >Auth</a >
+    >Auth</a>
+    </li>
+
+    <li>
     <a href="/share/"
      {{if eq .Active "shareIndex" }}
         class="text-indigo-500 text-lg font-semibold"
      {{else}}
         class="
+            block
+            py-4
+            md:p-4
             text-gray-600
             hover:text-indigo-500
             active:text-indigo-700
@@ -41,12 +63,18 @@
             transition
             duration-100"
      {{end}}
-    >Share</a >
+    >Share</a>
+    </li>
+
+    <li>
     <a href="/about/"
      {{if eq .Active "about" }}
         class="text-indigo-500 text-lg font-semibold"
      {{else}}
         class="
+            block
+            py-4
+            md:p-4
             text-gray-600
             hover:text-indigo-500
             active:text-indigo-700
@@ -55,6 +83,9 @@
             transition
             duration-100"
      {{end}}
-    >About</a >
-  </nav>
+    >About</a>
+    </li>
+
+    </ul>
+  </div>
 {{end}}
