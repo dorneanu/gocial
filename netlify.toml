@@ -4,6 +4,11 @@ command = "make netlify"
 publish = "/public"
 functions = "/functions"
 
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/lambda/:splat"
+  status = 200
+
 [build.environment]
 GO_VERSION = "1.17.2"
 GO111MODULE = "on"
