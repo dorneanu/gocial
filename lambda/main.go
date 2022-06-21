@@ -30,7 +30,7 @@ func init() {
 	e := echo.New()
 
 	webServerConf := server.HTTPServerConfig{
-		ListenAddr:      "127.0.0.1:3000",
+		ListenAddr:      "gocial.netlify.app",
 		TokenSigningKey: "secret key",
 		TokenExpiration: 5,
 	}
@@ -44,7 +44,7 @@ func init() {
 			Scopes:       []string{"r_emailaddress", "r_liteprofile", "w_member_social"},
 			ClientID:     os.Getenv("LINKEDIN_CLIENT_ID"),
 			ClientSecret: os.Getenv("LINKEDIN_CLIENT_SECRET"),
-			CallbackURL:  fmt.Sprintf("http://%s/auth/callback/linkedin", webServerConf.ListenAddr),
+			CallbackURL:  fmt.Sprintf("https://%s/auth/callback/linkedin", webServerConf.ListenAddr),
 		},
 		oauth.OAuthConfig{
 			ProviderName: "twitter",
