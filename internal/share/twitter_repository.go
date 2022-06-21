@@ -43,7 +43,8 @@ func NewTwitterShareRepository(twitterConf *TwitterConfig) *TwitterShareReposito
 // ShareArticle sends a new Tweet
 func (t *TwitterShareRepository) ShareArticle(ctx context.Context, article entity.ArticleShare) error {
 	// Compose post
-	post := fmt.Sprintf("%s %s", article.Comment, article.URL)
+	// TODO: also use article.Title
+	post := fmt.Sprintf("%s - %s", article.Comment, article.URL)
 
 	// Check post length
 	if len(post) > twitterMaxCharacters {

@@ -89,20 +89,3 @@ func SetupAuthProviders(confs []OAuthConfig) entity.AuthProviderIndex {
 
 	return entity.AuthProviderIndex{Providers: keys, ProvidersMap: m}
 }
-
-// func (s oauthService) GetAuthRepo() Repository {
-// 	// Initialize implementation for authentication service
-// 	s.repo.Init()
-
-// 	// setup
-// 	// jwtConfig := middleware.JWTConfig{
-// 	// 	Claims:      &jwtutils.JwtCustomClaims{},
-// 	// 	SigningKey:  []byte("secret key"),
-// 	// 	TokenLookup: "cookie:gocialAuth",
-// 	// }
-
-// 	// s.conf.routeGroup.GET("/", s.repo.HandleIndex)
-// 	// s.conf.routeGroup.GET("/info", s.repo.HandleInfo, middleware.JWTWithConfig(jwtConfig))
-// 	// s.conf.routeGroup.GET("/:provider", s.repo.HandleAuth)
-// 	// s.conf.routeGroup.GET("/callback/:provider", s.repo.HandleCallback)
-// }
