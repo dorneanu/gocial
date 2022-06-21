@@ -28,6 +28,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func (h httpServer) registerAPIRoutes(routerGroup *echo.Group) {
 	// Setup routes
 	routerGroup.POST("/share", h.handleAPIShare)
+	routerGroup.GET("/providers", h.handleAPIGetProviders)
 }
 
 // handleAPIShare ...
@@ -67,4 +68,18 @@ func (h httpServer) handleAPIShare(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, articleShare)
+}
+
+// handleAPIGetProviders ...
+func (h httpServer) handleAPIGetProviders(c echo.Context) error {
+	providers := make([]entity.IdentityProvider, 0)
+
+	for _, ip := range h.availableIdentityProviders(c) {
+		provider, err := h.identityService.GetByProvider(ip.Provider, c)
+		if err != nil {
+			continue
+		}
+		providers = append(providers, provider)
+	}
+	return c.JSONPretty(http.StatusOK, providers, "  ")
 }

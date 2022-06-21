@@ -2,15 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>gocial</title>
     <link href="/static/main.css" rel="stylesheet" />
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
+    <!-- AlpineJS -->
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"
+    ></script>
   </head>
   <body class="bg-white">
     <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
       <div class="max-w-screen-2xl px-4 md:px-8 mx-auto">
-
         <!-- header - start  -->
         {{template "header"}}
         <!-- header - end  -->
@@ -24,7 +32,6 @@
         <!-- footer - start -->
         {{template "footer"}}
         <!-- footer - end -->
-
       </div>
     </div>
   </body>

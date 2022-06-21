@@ -1,51 +1,84 @@
 <!-- profile.html -->
 {{define "content"}}
-<!-- Show fields jwt.JwtCustomClaims -->
-  {{ if not .Data }}
-    <div class="w-full">
-      {{ template "login" }}
+
+<div
+  x-data="{ results:[], isLoading: false }"
+  x-init="fetch('/api/providers')
+    .then(response => response.json())
+    .then(response => {
+          results = response;
+          isLoading = false;
+    })"
+>
+  <h2 x-show="isLoading">Loading ...</h2>
+
+  <!-- Show providers if there are any -->
+  <template x-if="results.length > 0">
+    <template x-for="prov in results">
+      <div class="grid md:grid-cols-6 gap-4">
+        <!-- images - start -->
+        <div class="space-y-4 col-span-1">
+          <div
+            x-show="prov.UserAvatarURL.length > 0"
+            class="bg-white-100 rounded-lg overflow-hidden relative"
+          >
+            <img
+              :src="prov.UserAvatarURL"
+              loading="lazy"
+              :alt="prov.UserName"
+              class="w-full object-center"
+            />
+          </div>
+        </div>
+        <!-- images - end -->
+
+        <!-- content - start -->
+        <div class="md:py-1 col-span-5">
+          <!-- name - start -->
+          <div class="mb-2 md:mb-3">
+            <span
+              class="inline-block text-gray-500 mb-0.5"
+              x-text="prov.Provider"
+            ></span>
+            <br />
+            <h2
+              x-text="prov.UserName"
+              class="text-gray-800 text-xl lg:text-2xl font-bold"
+            ></h2>
+          </div>
+          <!-- name - end -->
+
+          <!-- description - start -->
+          <div
+            x-show="prov.UserDescription.length > 0"
+            class="mt-10 md:mt-1 lg:mt-10"
+          >
+            <div class="text-gray-800 text-base mb-3">Description</div>
+
+            <p x-text="prov.UserDescription" class="text-gray-500"></p>
+          </div>
+          <br />
+          <!-- description - end -->
+        </div>
+        <!-- content - end -->
+      </div>
+    </template>
+  </template>
+
+  <!-- Otherwise show login  -->
+  <template x-if="results.length === 0">
+    <div
+      class="py-3 px-5 mb-4 bg-red-100 text-red-900 text-sm rounded-md border border-red-200"
+      role="alert"
+    >
+      No identity providers found. Please
+      <a
+        href="/auth/"
+        class="justify-center items-center bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus-visible:ring ring-blue-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 gap-1 px-5 py-1"
+      >
+        Login
+      </a>
     </div>
-  {{end}}
-
-<div class="grid md:grid-cols-6  gap-4">
-
-   <!-- TODO: Check if array/slice empty. If true, then show buttons for login -->
-
-  {{ range .Data }}
-
-  <!-- images - start -->
-  <div class="space-y-4 col-span-1">
-    {{ if .UserAvatarURL }}
-    <div class="bg-white-100 rounded-lg overflow-hidden relative">
-      <img src={{.UserAvatarURL}} loading="lazy" alt={{.UserName}} class="w-full object-center" />
-    </div>
-    {{ end }}
-  </div>
-  <!-- images - end -->
-
-  <!-- content - start -->
-  <div class="md:py-1 col-span-5">
-    <!-- name - start -->
-    <div class="mb-2 md:mb-3">
-      <span class="inline-block text-gray-500 mb-0.5">{{.Provider}}</span>
-      <h2 class="text-gray-800 text-2xl lg:text-3xl font-bold">{{.UserName}}</h2>
-    </div>
-    <!-- name - end -->
-
-
-    {{ if .UserDescription }}
-    <!-- description - start -->
-    <div class="mt-10 md:mt-16 lg:mt-20">
-      <div class="text-gray-800 text-lg font-semibold mb-3">Description</div>
-
-      <p class="text-gray-500">
-        {{.UserDescription}}
-      </p>
-    </div>
-    <!-- description - end -->
-    {{ end }}
-  </div>
-  {{ end }}
-  <!-- content - end -->
+  </template>
 </div>
 {{end}}

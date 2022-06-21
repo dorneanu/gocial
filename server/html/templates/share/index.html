@@ -1,10 +1,10 @@
 {{define "content"}}
-<div class="block p-6 rounded-lg shadow-lg bg-white max-w-md">
+<div class="w-full block p-6 rounded-lg shadow-lg bg-white">
+<h2 class="pb-4 pt-1">Share an article</h2>
   <form action="/api/share" method="post">
     <div class="form-group mb-6">
       <input type="text" class="
-        form-control
-        block
+        form-control block
         w-full
         px-3
         py-1.5
@@ -81,13 +81,7 @@
       active:bg-blue-800 active:shadow-lg
       transition
       duration-150
-      ease-in-out">Share article</button>
-  </form>
-  <form action="/api/share" method="post">
-    URL:<input type="text" name="url">
-    Title:<input type="text" name="title">
-    Comment:<input type="text" name="comment">
-    <input type="submit" value="Login">
+      ease-in-out">Share</button>
   </form>
 </div>
 {{end}}
