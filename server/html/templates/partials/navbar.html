@@ -1,91 +1,38 @@
 {{ define "navbar" }}
-<div id="menu" class="hidden w-full md:flex md:items-center md:justify-between md:w-auto ">
-  <ul class="
-           text-base text-gray-700
-           pt-4
-           md:flex
-           md:justify-between
-           md:pt-0"
-  >
-    <li>
-    {{if eq .Active "index" }}
-    <a href="/" class="text-indigo-500 text-lg font-semibold">Home</a>
-     {{else}}
-    <a href="/" class="
-            block
-            py-4
-            md:p-4
-            text-gray-600
-            hover:text-indigo-500
-            active:text-indigo-700
-            text-lg
-            font-semibold
-            transition
-            duration-100"
-    >Home</a>
-     {{end}}
-    </li>
 
-    <li>
-    <a href="/auth/info"
-     {{if eq .Active "authInfo" }}
-        class="text-indigo-500 text-lg font-semibold"
-     {{else}}
-        class="
-            block
-            py-4
-            md:p-4
-            text-gray-600
-            hover:text-indigo-500
-            active:text-indigo-700
-            text-lg
-            font-semibold
-            transition
-            duration-100"
-     {{end}}
-    >Auth</a>
-    </li>
-
-    <li>
-    <a href="/share/"
-     {{if eq .Active "shareIndex" }}
-        class="text-indigo-500 text-lg font-semibold"
-     {{else}}
-        class="
-            block
-            py-4
-            md:p-4
-            text-gray-600
-            hover:text-indigo-500
-            active:text-indigo-700
-            text-lg
-            font-semibold
-            transition
-            duration-100"
-     {{end}}
-    >Share</a>
-    </li>
-
-    <li>
-    <a href="/about/"
-     {{if eq .Active "about" }}
-        class="text-indigo-500 text-lg font-semibold"
-     {{else}}
-        class="
-            block
-            py-4
-            md:p-4
-            text-gray-600
-            hover:text-indigo-500
-            active:text-indigo-700
-            text-lg
-            font-semibold
-            transition
-            duration-100"
-     {{end}}
-    >About</a>
-    </li>
-
-    </ul>
+<nav
+  class="flex justify-between w-full flex-wrap md:flex-nowrap"
+  x-data="{ open: false }"
+>
+  <div class="flex justify-between items-center w-full">
+    <button
+      class="flex items-center text-black-200 font-bold text-xl hover:underline"
+    >
+      <a href="/">gocial</a>
+    </button>
+    <button
+      class="p-4 md:hidden hover:underline active:bg-blue-700 text-base bg-gray-200 text-gray-500 rounded-lg gap-2 px-2.5 py-2"
+      x-on:click="open = !open"
+    >
+      menu
+    </button>
   </div>
+  <div
+    class="text-base md:flex flex-col md:flex-row w-full md:w-1/3"
+    x-bind:class="{ 'hidden': !open }"
+  >
+    <button class="p-4 w-full hover:underline">
+      <a href="/about/">About</a>
+    </button>
+    <button class="p-4 w-full hover:underline">
+      <a href="/auth/info">Login</a>
+    </button>
+    <button class="p-4 w-full hover:underline">
+      <a href="/share/">Share</a>
+    </button>
+    <button class="p-4 w-full hover:underline">
+      <a href="/auth/logout">Logout</a>
+    </button>
+  </div>
+</nav>
 {{end}}
