@@ -3,8 +3,12 @@
   class="w-full block p-6 rounded-lg shadow-lg bg-white"
   x-data="shareForm()"
 >
-  <h2 x-text="message" class="pb-4 pt-1"></h2>
+  <label
+    x-text="message"
+    class="form-label inline-block mb-2 text-gray-700"
+  ></label>
   <form action="/api/share" method="POST" @submit.prevent="submitData">
+    <!-- URL -->
     <div class="form-group mb-6">
       <input
         type="text"
@@ -14,6 +18,7 @@
         x-model="formData.URL"
       />
     </div>
+    <!-- Title -->
     <div class="form-group mb-6">
       <input
         type="text"
@@ -23,7 +28,8 @@
         x-model="formData.title"
       />
     </div>
-    <div class="form-group mb-6">
+    <!-- Comment -->
+    <div class="form-group mb-6" data-limit="280">
       <input
         type="text"
         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -31,8 +37,37 @@
         rows="5"
         placeholder="Comment"
         x-model="formData.comment"
+        x-ref="comment"
       />
+      <p
+        x-ref="remaining"
+        x-text="`You have ${limit - comment.length} characters remaining."
+      ></p>
     </div>
+    <div class="form-group mb-6">
+      <label class="form-label inline-block mb-2 text-gray-700">Preview</label>
+      <textarea
+        readonly="readonly"
+        x-text="`${formData.title} ${formData.comment} - ${formData.URL}`"
+        placeholder="Readonly preview"
+        class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+      ></textarea>
+    </div>
+    <!-- Twitter remaining characters -->
+    <div
+      class="block mt-1 mb-6 text-xs text-gray-600"
+      x-data="{ limit: $el.dataset.limit }"
+      data-limit="280"
+    >
+      <small x-ref="remaining">
+        For <strong>Twitter</strong>: You have
+        <span
+          x-text="limit - ( formData.URL.length + formData.comment.length)"
+        ></span>
+        characters remaining. Title field is ignored.
+      </small>
+    </div>
+    <!-- Share button -->
     <button
       type="submit"
       class="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
@@ -42,6 +77,15 @@
   </form>
 </div>
 <script>
+  function commentData() {
+    return {
+      limit: $el.dataset.limit,
+      get remaining() {
+        return this.limit - this.content.length;
+      },
+    };
+  }
+
   function shareForm() {
     return {
       formData: {
@@ -73,7 +117,7 @@
           .then((jsonResponse) => {
             console.log("ok");
             console.log(jsonResponse);
-            this.message = "URL shared successfully!";
+            this.message = "<strong>URL shared successfully!</strong>";
           })
           .catch((err) => {
             console.log(err);
