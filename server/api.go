@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/dorneanu/gomation/internal/entity"
@@ -27,14 +26,12 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 // registerAPIRoutes ...
 func (h httpServer) registerAPIRoutes(routerGroup *echo.Group) {
 	// Setup routes
-	routerGroup.POST("/share", h.handleAPIShare)
+	routerGroup.POST("/share/:provider", h.handleAPIShare)
 	routerGroup.GET("/providers", h.handleAPIGetProviders)
 }
 
 // handleAPIShare ...
 func (h httpServer) handleAPIShare(c echo.Context) error {
-	fmt.Print("API Share")
-
 	// Custom validator
 	c.Echo().Validator = &CustomValidator{validator: validator.New()}
 
@@ -50,23 +47,31 @@ func (h httpServer) handleAPIShare(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	// Get available identity providers
-	for _, ip := range h.availableIdentityProviders(c) {
-		shareRepo, err := h.shareService.GetShareRepo(ip)
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			continue
-		}
+	// Get provider (URL parameter)
+	provider := c.Param("provider")
 
-		// Share article
-		if err := h.shareService.ShareArticle(*articleShare, shareRepo); err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
-				"error":    err.Error(),
-				"provider": ip.Provider,
-			})
-		}
+	// Try to fetch an identity provider from the identity service
+	idProvider, err := h.identityService.GetByProvider(provider, c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+			"error":    err.Error(),
+			"provider": provider,
+		})
 	}
-
+	shareRepo, err := h.shareService.GetShareRepo(idProvider)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+			"error":    err.Error(),
+			"provider": provider,
+		})
+	}
+	// Share article
+	if err := h.shareService.ShareArticle(*articleShare, shareRepo); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+			"error":    err.Error(),
+			"provider": idProvider.Provider,
+		})
+	}
 	return c.JSON(http.StatusOK, articleShare)
 }
 

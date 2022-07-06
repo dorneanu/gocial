@@ -8,6 +8,23 @@
     class="form-label inline-block mb-2 text-gray-700"
   ></label>
   <form action="/api/share" method="POST" @submit.prevent="submitData">
+    <!-- Checkboxes -->
+    <div x-data="checkboxData()" class="mb-8">
+      <div class="form-check">
+        <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="twitter" id="flexCheckDefault">
+        <label class="form-check-label inline-block text-gray-800" for="flexCheckDefault">
+          <a href="/auth/twitter">Send to twitter</a>
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="linkedin" id="flexCheckChecked">
+        <label class="form-check-label inline-block text-gray-800" for="flexCheckChecked">
+          <a href="/auth/linkedin">Send to LinkedIn</a>
+        </label>
+      </div>
+      <button @click="checkboxData()">Click Me</button>
+    </div>
+
     <!-- URL -->
     <div class="form-group mb-6">
       <input
@@ -104,25 +121,46 @@
           throw err;
         }
       },
+      checkboxData() {
+        // Collect checkbox values
+        var array = []
+        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
 
-      submitData() {
-        fetch("/api/share", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.formData),
-        })
-          // handle network err/success
-          .then(this.handleErrors)
-          // use response of network on fetch Promise resolve
-          .then((jsonResponse) => {
-            console.log("ok");
-            console.log(jsonResponse);
-            this.message = "<strong>URL shared successfully!</strong>";
+        for (var i = 0; i < checkboxes.length; i++) {
+          array.push(checkboxes[i].value)
+        };
+
+        console.log(array);
+      },
+      async submitData() {
+        // Collect checkbox values
+        var providersArray = []
+        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+
+        // For every checkbox send request
+        for (var i = 0; i < checkboxes.length; i++) {
+          provider = checkboxes[i].value;
+          providersArray.push(provider);
+
+          // Send request
+          await fetch(["/api/share/",provider].join(''), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(this.formData),
           })
-          .catch((err) => {
-            console.log(err);
-            this.message = "Couldn't share article: " + err;
-          });
+          // handle network err/success
+            .then(this.handleErrors)
+          // use response of network on fetch Promise resolve
+            .then((jsonResponse) => {
+              console.log("ok");
+              console.log(jsonResponse);
+              this.message = "URL shared successfully to " + provider;
+            })
+            .catch((err) => {
+              console.log(err);
+              this.message = "Couldn't share article: " + err;
+            });
+        };
       },
     };
   }
