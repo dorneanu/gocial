@@ -22,7 +22,6 @@
           <a href="/auth/linkedin">Send to LinkedIn</a>
         </label>
       </div>
-      <button @click="checkboxData()">Click Me</button>
     </div>
 
     <!-- URL -->
@@ -121,18 +120,7 @@
           throw err;
         }
       },
-      checkboxData() {
-        // Collect checkbox values
-        var array = []
-        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
-
-        for (var i = 0; i < checkboxes.length; i++) {
-          array.push(checkboxes[i].value)
-        };
-
-        console.log(array);
-      },
-      async submitData() {
+     async submitData() {
         // Collect checkbox values
         var providersArray = []
         var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
