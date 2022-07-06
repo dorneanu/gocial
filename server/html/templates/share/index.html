@@ -9,7 +9,7 @@
   ></label>
   <form action="/api/share" method="POST" @submit.prevent="submitData">
     <!-- Checkboxes -->
-    <div x-data="checkboxData()" class="mb-8">
+    <div class="mb-8">
       <div class="form-check">
         <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="twitter" id="flexCheckDefault">
         <label class="form-check-label inline-block text-gray-800" for="flexCheckDefault">
@@ -55,10 +55,6 @@
         x-model="formData.comment"
         x-ref="comment"
       />
-      <p
-        x-ref="remaining"
-        x-text="`You have ${limit - comment.length} characters remaining."
-      ></p>
     </div>
     <div class="form-group mb-6">
       <label class="form-label inline-block mb-2 text-gray-700">Preview</label>
@@ -109,7 +105,7 @@
         title: "",
         comment: "",
       },
-      message: "Share an article",
+      message: "",
       // fetch API error handler
       handleErrors(response) {
         if (response.status >= 200 && response.status <= 299) {
