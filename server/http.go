@@ -91,7 +91,7 @@ func (h httpServer) Start(e *echo.Echo) {
 
 // handleIndex takes care of GET "/"
 func (h httpServer) handleIndex(c echo.Context) error {
-	return c.Render(http.StatusOK, "index", nil)
+	return c.Render(http.StatusOK, "about", nil)
 }
 
 func (h httpServer) handleAbout(c echo.Context) error {

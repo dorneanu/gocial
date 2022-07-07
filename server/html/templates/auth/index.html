@@ -1,16 +1,20 @@
 <!-- index.html -->
 {{define "content"}}
-<div class="grid sm:grid-cols-2 gap-4 mb-10">
-  <!-- image - start -->
-  <div class="h-30 md:h-auto bg-gray-100 overflow-hidden shadow-lg rounded-lg">
-    <img
-      src="https://images.unsplash.com/photo-1626790680787-de5e9a07bcf2?auto=format&q=75&fit=crop&w=600"
-      loading="lazy"
-      alt="Photo by Theo Crazzolara"
-      class="w-full h-full object-cover object-center"
-    />
+<div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+  <div>
+    <!-- image - start -->
+    <div
+      class="h-32 md:h-auto bg-white-100 overflow-hidden rounded-lg shadow-lg"
+    >
+      <img
+        src="https://storage.googleapis.com/gopherizeme.appspot.com/gophers/89eea2846999afb6e364dbb9abfdf9f394b7a970.png"
+        loading="lazy"
+        alt="gopherize.me"
+        class="w-full h-full object-cover object-center"
+      />
+    </div>
+    <!-- image - end -->
   </div>
-  <!-- image - end -->
   {{ template "login" }}
 </div>
 {{end}}
