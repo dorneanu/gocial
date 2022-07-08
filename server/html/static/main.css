@@ -750,12 +750,12 @@ select {
   display: none;
 }
 
-.h-32 {
-  height: 8rem;
-}
-
 .h-full {
   height: 100%;
+}
+
+.h-32 {
+  height: 8rem;
 }
 
 .h-px {
