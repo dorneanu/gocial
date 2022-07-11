@@ -67,18 +67,7 @@
 
   <!-- Otherwise show login  -->
   <template x-if="results.length === 0">
-    <div
-      class="py-3 px-5 mb-4 bg-red-100 text-red-900 text-sm rounded-md border border-red-200"
-      role="alert"
-    >
-      No identity providers found. Please
-      <a
-        href="/auth/"
-        class="justify-center items-center bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus-visible:ring ring-blue-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 gap-1 px-5 py-1"
-      >
-        Login
-      </a>
-    </div>
+    {{template "login-message"}}
   </template>
 </div>
 {{end}}
