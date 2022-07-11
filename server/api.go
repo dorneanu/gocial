@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/dorneanu/gomation/internal/entity"
 	"github.com/go-playground/validator/v10"
@@ -26,7 +27,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 // registerAPIRoutes ...
 func (h httpServer) registerAPIRoutes(routerGroup *echo.Group) {
 	// Setup routes
-	routerGroup.POST("/share/:provider", h.handleAPIShare)
+	routerGroup.POST("/share", h.handleAPIShare)
 	routerGroup.GET("/providers", h.handleAPIGetProviders)
 }
 
@@ -48,29 +49,31 @@ func (h httpServer) handleAPIShare(c echo.Context) error {
 	}
 
 	// Get provider (URL parameter)
-	provider := c.Param("provider")
+	providers := strings.Split(articleShare.Providers, ",")
 
-	// Try to fetch an identity provider from the identity service
-	idProvider, err := h.identityService.GetByProvider(provider, c)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
-			"error":    err.Error(),
-			"provider": provider,
-		})
-	}
-	shareRepo, err := h.shareService.GetShareRepo(idProvider)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
-			"error":    err.Error(),
-			"provider": provider,
-		})
-	}
-	// Share article
-	if err := h.shareService.ShareArticle(*articleShare, shareRepo); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
-			"error":    err.Error(),
-			"provider": idProvider.Provider,
-		})
+	for _, provider := range providers {
+		// Try to fetch an identity provider from the identity service
+		idProvider, err := h.identityService.GetByProvider(provider, c)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+				"error":    err.Error(),
+				"provider": provider,
+			})
+		}
+		shareRepo, err := h.shareService.GetShareRepo(idProvider)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+				"error":    err.Error(),
+				"provider": provider,
+			})
+		}
+		// Share article
+		if err := h.shareService.ShareArticle(*articleShare, shareRepo); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, echo.Map{
+				"error":    err.Error(),
+				"provider": idProvider.Provider,
+			})
+		}
 	}
 	return c.JSON(http.StatusOK, articleShare)
 }

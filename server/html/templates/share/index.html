@@ -2,7 +2,13 @@
 <div
   class="w-full block p-6 rounded-lg shadow-lg bg-white"
   x-data="shareForm()"
+  x-init="fetch('/api/providers')
+    .then(response => response.json())
+    .then(response => {
+          identities = response;
+    })"
 >
+  <h2 class="mb-8 text-3xl text-center">Share article</h2>
   <label
     x-text="message"
     class="form-label inline-block mb-2 text-gray-700"
@@ -10,18 +16,20 @@
   <form action="/api/share" method="POST" @submit.prevent="submitData">
     <!-- Checkboxes -->
     <div class="mb-8">
-      <div class="form-check">
-        <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="twitter" id="flexCheckDefault">
-        <label class="form-check-label inline-block text-gray-800" for="flexCheckDefault">
-          <a href="/auth/twitter">Send to twitter</a>
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="linkedin" id="flexCheckChecked">
-        <label class="form-check-label inline-block text-gray-800" for="flexCheckChecked">
-          <a href="/auth/linkedin">Send to LinkedIn</a>
-        </label>
-      </div>
+      <p class="mb-6">Available identities</p>
+      <template x-if="identities.length > 0">
+        <template x-for="id in identities">
+          <div class="form-check">
+            <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" :value="id.Provider" id="flexCheckDefault">
+            <label class="form-check-label inline-block text-gray-800" for="flexCheckDefault">
+              Send to <a :href="id.Provider" x-text="id.Provider" class="text-indigo-500 sm:text-lg mb-6 md:mb-8 hover:underline"></a> (logged in as <span x-text="id.UserName"></span>)
+            </label>
+          </div>
+        </template>
+      </template>
+      <template x-if="identities.length === 0">
+        {{template "login-message"}}
+      </template>
     </div>
 
     <!-- URL -->
@@ -104,8 +112,10 @@
         URL: "",
         title: "",
         comment: "",
+        providers: "",
       },
       message: "",
+      identities: [],
       // fetch API error handler
       handleErrors(response) {
         if (response.status >= 200 && response.status <= 299) {
@@ -125,26 +135,29 @@
         for (var i = 0; i < checkboxes.length; i++) {
           provider = checkboxes[i].value;
           providersArray.push(provider);
-
-          // Send request
-          await fetch(["/api/share/",provider].join(''), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(this.formData),
-          })
-          // handle network err/success
-            .then(this.handleErrors)
-          // use response of network on fetch Promise resolve
-            .then((jsonResponse) => {
-              console.log("ok");
-              console.log(jsonResponse);
-              this.message = "URL shared successfully to " + provider;
-            })
-            .catch((err) => {
-              console.log(err);
-              this.message = "Couldn't share article: " + err;
-            });
         };
+
+        this.formData.providers = providersArray.join(",");
+       console.log(this.formData);
+
+       // Send request
+       await fetch("/api/share", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(this.formData),
+       })
+       // handle network err/success
+         .then(this.handleErrors)
+       // use response of network on fetch Promise resolve
+         .then((jsonResponse) => {
+           console.log("ok");
+           console.log(jsonResponse);
+           this.message = "URL shared successfully to " + this.formData.providers;
+         })
+         .catch((err) => {
+           console.log(err);
+           this.message = "Couldn't share article: " + err;
+         });
       },
     };
   }
