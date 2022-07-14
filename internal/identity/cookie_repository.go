@@ -39,11 +39,20 @@ func (cr *CookieIdentityRepository) Add(id entity.IdentityProvider, c echo.Conte
 		return fmt.Errorf("Cannot generate new JWT token: %s", err)
 	}
 
+	// Check if expiresAt is set
+	var expiresAt time.Time
+	if id.ExpiresAt.IsZero() {
+		// TODO: change this
+		expiresAt = time.Now().Add(720 * time.Hour)
+	} else {
+		expiresAt = *id.ExpiresAt
+	}
+
 	identityCookie := &http.Cookie{
 		Name:     fmt.Sprintf("%s-%s", cr.baseCookieName, id.Provider),
 		Value:    jwtToken,
 		Path:     "/",
-		Expires:  time.Now().Add(56 * time.Hour),
+		Expires:  expiresAt,
 		MaxAge:   0,
 		Secure:   true,
 		HttpOnly: true,
@@ -67,6 +76,7 @@ func (cr *CookieIdentityRepository) GetByProvider(provider string, c echo.Contex
 
 	// Check if valid
 	if claims, ok := token.Claims.(*jwtutils.JwtCustomClaims); ok && token.Valid {
+		expiresAt := time.Unix(claims.ExpiresAt, 0)
 		return entity.IdentityProvider{
 			Provider:          claims.Provider,
 			UserName:          claims.UserName,
@@ -76,7 +86,7 @@ func (cr *CookieIdentityRepository) GetByProvider(provider string, c echo.Contex
 			AccessToken:       claims.AccessToken,
 			AccessTokenSecret: claims.AccessTokenSecret,
 			RefreshToken:      claims.RefreshToken,
-			ExpiresAt:         &time.Time{},
+			ExpiresAt:         &expiresAt,
 		}, nil
 	} else {
 		return entity.IdentityProvider{}, fmt.Errorf("Couldn't validate JWT token: %s", err)
