@@ -13,16 +13,14 @@ import (
 // GothRepository implements auth.Repository
 type GothRepository struct {
 	providerIndex entity.AuthProviderIndex
-	identityRepo  entity.IdentityRepository
 	jwtSigningKey string
 }
 
-func NewGothRepository(providerIndex entity.AuthProviderIndex, idRepo entity.IdentityRepository, signingKey string) *GothRepository {
+func NewGothRepository(providerIndex entity.AuthProviderIndex, signingKey string) *GothRepository {
 	// Setup cookie store
 	setupCookies()
 
 	return &GothRepository{
-		identityRepo:  idRepo,
 		jwtSigningKey: signingKey,
 		providerIndex: providerIndex,
 	}

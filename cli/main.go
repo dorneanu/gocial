@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/dorneanu/gocial/internal/entity"
 	"github.com/dorneanu/gocial/internal/identity"
 	"github.com/dorneanu/gocial/internal/oauth"
 	"github.com/dorneanu/gocial/internal/share"
@@ -64,11 +63,11 @@ func main() {
 
 					// New identity repository
 					// TODO: Is this still needed
-					idRepo := entity.NewFileIdentityRepo("./auth.yaml")
+					// idRepo := entity.NewFileIdentityRepo("./auth.yaml")
 
 					// New goth auth repository
 					providerIndex := oauth.SetupAuthProviders(oauthConfigs)
-					gothRepository := oauth.NewGothRepository(providerIndex, idRepo, webServerConf.TokenSigningKey)
+					gothRepository := oauth.NewGothRepository(providerIndex, webServerConf.TokenSigningKey)
 
 					// New identity repository
 					cookieIdentityRepo := identity.NewCookieIdentityRepository(&identity.CookieIdentityOptions{
