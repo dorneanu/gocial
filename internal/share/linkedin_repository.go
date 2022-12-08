@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 )
 
 const (

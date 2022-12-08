@@ -6,7 +6,7 @@ import (
 
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 )
 
 // https://developer.twitter.com/en/docs/counting-characters

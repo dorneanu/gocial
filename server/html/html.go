@@ -6,9 +6,9 @@ import (
 	"html/template"
 	"io"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 	"github.com/labstack/echo/v4"
-	// "github.com/dorneanu/gomation/internal/jwt"
+	// "github.com/dorneanu/gocial/internal/jwt"
 )
 
 var (

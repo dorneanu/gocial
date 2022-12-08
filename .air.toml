@@ -3,7 +3,7 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  bin = "./gomation a"
+  bin = "./gocial a"
   cmd = "make build"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]

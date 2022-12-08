@@ -2,57 +2,60 @@
 <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
   <div>
     <div
-      class="h-32 md:h-auto bg-gray-100 overflow-hidden rounded-lg shadow-lg"
+      class="h-32 md:h-auto bg-white-100 overflow-hidden rounded-lg shadow-lg"
     >
       <img
-        src="https://images.unsplash.com/photo-1610465299996-30f240ac2b1c?auto=format&q=75&fit=crop&w=600&h=750"
+        src="https://storage.googleapis.com/gopherizeme.appspot.com/gophers/14630f9f7e9dde61fd751e9a34abee8766104bf5.png"
         loading="lazy"
-        alt="Photo by Martin Sanchez"
+        alt="gopher by gopherize.me"
         class="w-full h-full object-cover object-center"
       />
     </div>
   </div>
 
   <div class="md:pt-8">
-    <p class="text-indigo-500 font-bold text-center md:text-left">Who we are</p>
-
-    <h1
-      class="text-gray-800 text-2xl sm:text-3xl font-bold text-center md:text-left mb-4 md:mb-6"
-    >
-      Our competitive advantage
-    </h1>
-
-    <p class="text-gray-500 sm:text-lg mb-6 md:mb-8">
-      This is a section of some simple filler text, also known as placeholder
-      text. It shares some characteristics of a real written text but is random
-      or otherwise generated. It may be used to display a sample of fonts or
-      generate text for testing. Filler text is dummy text which has no meaning
-      however looks very similar to real text.<br /><br />
-
-      This is a section of some simple filler text, also known as placeholder
-      text. It shares some characteristics of a real written text but is
-      <a
-        href="#"
-        class="text-indigo-500 hover:text-indigo-600 active:text-indigo-700 underline transition duration-100"
-        >random</a
-      >
-      or otherwise generated. It may be used to display a sample of fonts or
-      generate text for testing. Filler text is dummy text which has no meaning
-      however looks very similar to real text.
-    </p>
-
     <h2
       class="text-gray-800 text-xl sm:text-2xl font-semibold text-center md:text-left mb-2 md:mb-4"
     >
       About gocial
     </h2>
 
+    <!-- About -->
     <p class="text-gray-500 sm:text-lg mb-6 md:mb-8">
-      This is a section of some simple filler text, also known as placeholder
-      text. It shares some characteristics of a real written text but is random
-      or otherwise generated. It may be used to display a sample of fonts or
-      generate text for testing. Filler text is dummy text which has no meaning
-      however looks very similar to real text.
+      Some while ago I was heavily using services like <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://buffer.com">buffer</a>,
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://zapier.com">zapier</a> and
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://ifttt.com">ifttt</a> to automatically
+      share interesting articles on social media. Nowadays I mostly use
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://twitter.com/victordorneanu">Twitter</a> and
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://www.linkedin.com/in/victor-dorneanu">LinkedIn</a>
+      to stay in touch with (ex-)colleagues and people I find interesting.
+      <br/>
+      <br/>
+      All sharing services had great functionalities (e.g. automated workflows) but you're always limited in the number of shares
+      you can distribute within a time frame without paying for the premium account. At the same time
+      they all lacked support for sharing via
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://www.linkedin.com/in/victor-dorneanu">LinkedIn</a>.
+      I had a brief look at the
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8">LinkedIn API documentation</a> and decided I'll implement my own
+      service using Golang for the backend.
+    </p>
+
+    <h1
+      class="text-gray-800 text-2xl sm:text-3xl font-bold text-center md:text-left mb-4 md:mb-6"
+    >
+      Features
+    </h1>
+
+    <!-- Features -->
+    <p class="text-gray-500 sm:text-lg mb-6 md:mb-8">
+      This service definitely cannot compete with the commercial ones but I learned a lot
+      how to design such a software project using
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://brainfck.org/#DDD">Domain-Driven Design</a> and
+      <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="https://brainfck.org/#Hexagonal%20Architecture">Hexgonal Architecture</a>.
+      The application will share URLs/articles via a <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="/share/">web interface</a>
+      to Twitter and LinkedIn. Nothing is stored server-side and stateless authentication via JWT tokens (stored as cookies) is used
+      to <a class="text-indigo-500 sm:text-lg mb-6 md:mb-8" href="/auth/">authenticate</a> the requests. In the near future I plan to add
+      RSS feeds for Twitter timelines and LinkedIn network activities.
     </p>
   </div>
 </div>

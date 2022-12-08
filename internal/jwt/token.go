@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 	"github.com/golang-jwt/jwt"
 )
 

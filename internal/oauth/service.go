@@ -3,7 +3,7 @@ package oauth
 import (
 	"strings"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/linkedin"
 	"github.com/markbates/goth/providers/twitter"

@@ -3,7 +3,7 @@ package share
 import (
 	"context"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 )
 
 type Repository interface {

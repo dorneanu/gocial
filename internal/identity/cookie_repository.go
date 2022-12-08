@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dorneanu/gomation/internal/entity"
-	jwtutils "github.com/dorneanu/gomation/internal/jwt"
+	"github.com/dorneanu/gocial/internal/entity"
+	jwtutils "github.com/dorneanu/gocial/internal/jwt"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )

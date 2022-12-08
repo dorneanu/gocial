@@ -1,2 +1,2 @@
-# gomation
+# gocial
 Automisations in Golang

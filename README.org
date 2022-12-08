@@ -1,4 +1,4 @@
-#+TITLE: Readme for Gomation
+#+TITLE: Readme for gocial
 
 * To implement
 ** Add basic web API to interact with Linkedin API
@@ -19,5 +19,6 @@
 - https://github.com/labstack/echo/issues/2139
 - https://lets-go.alexedwards.net/sample/02.07-html-templating-and-inheritance.html
 - https://www.practical-go-lessons.com/chap-32-templates
+* https://dev.to/mklabs/bootstrapping-a-startup-on-aws-with-aws-serverless-and-go-14og
 * Testing
 ** Auth

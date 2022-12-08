@@ -1,4 +1,4 @@
-module github.com/dorneanu/gomation
+module github.com/dorneanu/gocial
 
 go 1.17
 

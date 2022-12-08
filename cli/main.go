@@ -6,12 +6,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/dorneanu/gomation/internal/config"
-	"github.com/dorneanu/gomation/internal/entity"
-	"github.com/dorneanu/gomation/internal/identity"
-	"github.com/dorneanu/gomation/internal/oauth"
-	"github.com/dorneanu/gomation/internal/share"
-	"github.com/dorneanu/gomation/server"
+	"github.com/dorneanu/gocial/internal/entity"
+	"github.com/dorneanu/gocial/internal/identity"
+	"github.com/dorneanu/gocial/internal/oauth"
+	"github.com/dorneanu/gocial/internal/share"
+	"github.com/dorneanu/gocial/server"
 	"github.com/labstack/echo/v4"
 	"github.com/urfave/cli/v2"
 )
@@ -20,7 +19,6 @@ var (
 	postURL     string
 	postTitle   string
 	postComment string
-	conf        config.Config
 )
 
 func main() {

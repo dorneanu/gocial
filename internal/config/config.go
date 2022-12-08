@@ -3,7 +3,7 @@ package config
 import (
 	"io/ioutil"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 	"gopkg.in/yaml.v3"
 )
 

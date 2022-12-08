@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 )
 
 type Service interface {

@@ -1,5 +1,5 @@
 ##
-# Gomation
+# gocial
 #
 # @file
 # @version 0.1
@@ -12,7 +12,7 @@ current_dir = $(shell pwd)
 build: go-binary tailwind
 
 go-binary:
-	go build -o gomation ./cli/main.go
+	go build -o gocial ./cli/main.go
 
 netlify:
 	mkdir -p functions
@@ -27,4 +27,4 @@ tailwind:
 	npx tailwindcss build -i tailwind.css -o static/main.css
 
 go-lambda:
-	go build -o gomation-lambda ./lambda/main.go
+	go build -o gocial-lambda ./lambda/main.go

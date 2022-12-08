@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dorneanu/gomation/internal/entity"
-	"github.com/dorneanu/gomation/server/html"
+	"github.com/dorneanu/gocial/internal/entity"
+	"github.com/dorneanu/gocial/server/html"
 	"github.com/labstack/echo/v4"
 )
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dorneanu/gomation/internal/entity"
+	"github.com/dorneanu/gocial/internal/entity"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )

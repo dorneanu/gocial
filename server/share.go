@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/dorneanu/gomation/server/html"
+	"github.com/dorneanu/gocial/server/html"
 	"github.com/labstack/echo/v4"
 )
 
