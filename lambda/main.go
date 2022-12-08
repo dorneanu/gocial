@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	echoadapter "github.com/awslabs/aws-lambda-go-api-proxy/echo"
-	"github.com/dorneanu/gocial/internal/entity"
 	"github.com/dorneanu/gocial/internal/identity"
 	"github.com/dorneanu/gocial/internal/oauth"
 	"github.com/dorneanu/gocial/internal/share"
@@ -35,7 +34,7 @@ func init() {
 		TokenExpiration: 5,
 	}
 	// TODO: Is this still needed
-	idRepo := entity.NewFileIdentityRepo("./auth.yaml")
+	// idRepo := entity.NewFileIdentityRepo("./auth.yaml")
 
 	// Create OAuth configs for different providers
 	oauthConfigs := []oauth.OAuthConfig{
@@ -56,7 +55,7 @@ func init() {
 
 	// New goth auth repository
 	providerIndex := oauth.SetupAuthProviders(oauthConfigs)
-	gothRepository := oauth.NewGothRepository(providerIndex, idRepo, webServerConf.TokenSigningKey)
+	gothRepository := oauth.NewGothRepository(providerIndex, webServerConf.TokenSigningKey)
 
 	// New identity repository
 	cookieIdentityRepo := identity.NewCookieIdentityRepository(&identity.CookieIdentityOptions{
