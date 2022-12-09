@@ -1,24 +1,157 @@
 #+TITLE: Readme for gocial
+* About
+Share articles and comments via different social media platforms.
+* Architecture
+#+begin_src plantuml :file docs/images/architecture.png :results file replace :cmdline -charset UTF-8 :exports none
+@startuml
+'skinparam dpi 300
+scale 1600 width
+skinparam nodesep 20
 
-* To implement
-** Add basic web API to interact with Linkedin API
-** JWT
-*** Make sure secret key is also available in the service / goth repository
-* Resources
-** https://github.com/johnaoss/linkedin-api
-*** Has to be ported to v2
-*** but the [[https://github.com/johnaoss/linkedin-api/blob/master/api.go][entities]] can be use
-** [[https://stackoverflow.com/questions/64514954/lsp-mode-for-go-erring-out-with-no-views-in-session][regarding LSP mode with golang]]
-** https://github.com/dexidp/dex/blob/master/examples/example-app/main.go
-** [[https://www.loginradius.com/blog/async/twitter-authentication-with-golang-and-goth/][Twitter Authentication with Golang and Goth]]
-** [[https://github.com/markbates/goth/issues/310][How to use JWT with goth?]]
-** Twitter
-*** Authentication
-- [[https://developer.twitter.com/en/docs/authentication/oauth-1-0a][OAuth 1.0a User Context]]
-** Templating
-- https://github.com/labstack/echo/issues/2139
-- https://lets-go.alexedwards.net/sample/02.07-html-templating-and-inheritance.html
-- https://www.practical-go-lessons.com/chap-32-templates
-* https://dev.to/mklabs/bootstrapping-a-startup-on-aws-with-aws-serverless-and-go-14og
-* Testing
-** Auth
+'top to bottom direction
+left to right direction
+
+skinparam SameClassWidth true
+
+package "Business Domain(s) ❶" as app_core {
+    package Entities {
+        entity "entity.IdentityProvider" as IdentityProvider {
+            // Stores information about identity providers (e.g. Twitter)
+            string Provider
+            string UserName
+            string UserID
+            string UserDescription
+            string UserAvatarURL
+            string AccessToken
+            string AccessTokenSecret
+            string RefreshToken
+            time.Time ExpiresAt
+        }
+        entity "entity.ArticleShare" as ArticleShare {
+            string URL
+            string Title
+            string Comment
+            string Providers
+            // Holds information about an article to be shared
+
+        }
+        entity "entity.CommentShare" as CommentShare {
+            string Comment
+            // Holds information about a comment to be shared
+
+        }
+        entity "entity.AuthProviderIndex" as AuthProviderIndex {
+            []string Providers
+            map[string]string ProvidersMap
+            // Holds list of available (identity) providers
+        }
+    }
+
+    package Identity {
+        interface identityRepository as "identity.Repository" {
+            Storage for available identities
+            + Add (entity.IdentityProvider, echo.Context) error
+            + GetByProvider(string, echo.Context) (entity.IdentityProvider, error)
+            + Delete (string, echo.Context) error
+            + Save() error
+            + Load() error
+        }
+    }
+
+    package OAuth {
+        interface oauthRepository as "oauth.Repository" {
+            Authentication handler
+            + HandleAuth (echo.Context) error
+            + HandleAuthCallback (echo.Context) error
+        }
+        class oauthService as "oauth.Service" {
+            + Repo: oauth.Repository
+            + ProviderIndex: entity.AuthProviderIndex
+        }
+    }
+
+    package Share {
+        interface shareRepository as "share.Repository" {
+            Defines how an article should be shared
+            + ShareArticle(context.Context, entity.ArticleShare) error
+        }
+
+        class shareService as "share.Service" {
+            + ShareArticle(entity.ArticleShare, share.Repository) error
+            + ShareComment(entity.CommentShare, share.Repository) error
+            + GetShareRepo(entity.IdentityProvider) (share.Repository, error)
+        }
+    }
+}
+
+package "Services ❷" as services {
+    class HTTPServer {
+        // Exposes API and functionalities via HTTP
+    }
+
+    class Lambda {
+        // Exposes functionalities in a Serverless environment
+    }
+
+    ' class CLICommand as "CLI" {
+    ' '    // Interact with gocial via CLI
+    ' '}
+}
+
+package "OAuth Repositories" as oauthRepoImpl {
+    class GothRepository  {
+        Handles OAuth workflow between gocial and identity providers\nusing 3rd-party library called goth.
+    }
+}
+
+package "Identity Repositories" as  identityRepoImpl {
+    class CookieIdentityRepository {
+        Reads, stores and handles authentication data via cookies.\nJWT tokens are used and stored as secure and httpOnly cookies.
+    }
+
+    class FileIdentityRepository {
+        Reads, stores and handles authentication data via files
+    }
+}
+
+package "Share Repositories" as shareRepoImpl {
+    class LinkedinShareRepository  {
+        Shares articles via LinkedIn
+    }
+
+    class TwitterShareRepository  {
+        Shares articles via Twitter
+    }
+}
+
+' ----------- Connections
+HTTPServer -up-> oauthService: uses
+HTTPServer -up-> shareService : uses
+HTTPServer -up-> identityRepository : uses
+Lambda ---left---> HTTPServer: uses
+
+'CLICommand --> oauthService: uses
+
+GothRepository ..> oauthRepository: implements
+LinkedinShareRepository ..> shareRepository: implements
+TwitterShareRepository ..> shareRepository: implements
+
+CookieIdentityRepository ..> identityRepository: implements
+FileIdentityRepository ..> identityRepository: implements
+
+' ----------- Alignment
+' All entities below each other
+IdentityProvider -[hidden]left- ArticleShare
+ArticleShare -[hidden]left- AuthProviderIndex
+CommentShare -[hidden]left- AuthProviderIndex
+
+' Services right of entities
+Entities -[hidden]up- services
+
+
+@enduml
+#+end_src
+
+#+caption: Architecture
+#+RESULTS:
+[[./docs/images/architecture.png]]

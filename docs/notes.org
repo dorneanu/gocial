@@ -1,0 +1,22 @@
+* To implement
+** Add basic web API to interact with Linkedin API
+** JWT
+*** Make sure secret key is also available in the service / goth repository
+* Resources
+** https://github.com/johnaoss/linkedin-api
+*** Has to be ported to v2
+*** but the [[https://github.com/johnaoss/linkedin-api/blob/master/api.go][entities]] can be use
+** [[https://stackoverflow.com/questions/64514954/lsp-mode-for-go-erring-out-with-no-views-in-session][regarding LSP mode with golang]]
+** https://github.com/dexidp/dex/blob/master/examples/example-app/main.go
+** [[https://www.loginradius.com/blog/async/twitter-authentication-with-golang-and-goth/][Twitter Authentication with Golang and Goth]]
+** [[https://github.com/markbates/goth/issues/310][How to use JWT with goth?]]
+** Twitter
+*** Authentication
+- [[https://developer.twitter.com/en/docs/authentication/oauth-1-0a][OAuth 1.0a User Context]]
+** Templating
+- https://github.com/labstack/echo/issues/2139
+- https://lets-go.alexedwards.net/sample/02.07-html-templating-and-inheritance.html
+- https://www.practical-go-lessons.com/chap-32-templates
+* https://dev.to/mklabs/bootstrapping-a-startup-on-aws-with-aws-serverless-and-go-14og
+* Testing
+** Auth

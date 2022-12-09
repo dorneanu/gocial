@@ -1,2 +1,0 @@
-# gocial
-Automisations in Golang
