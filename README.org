@@ -153,3 +153,17 @@ Entities -[hidden]up- services
 
 #+caption: Architecture
 [[file:docs/images/architecture.png]]
+
+** Business domain
+- everything related to the *business case*
+  - user wants to allow /gocial/ to make posts and his/her behalf
+  - user can share articles/comments to multiple social media platforms
+- contains
+  - /Entities/
+  - Different /other/ domains related to the business case
+    - each one might contain
+      - /Services/
+      - /Repositories/Interfaces/
+** TODO Identity
+** TODO OAuth
+** TODO Share
