@@ -1,4 +1,3 @@
-#+TITLE: Readme for gocial
 * About
 Share articles and comments via different social media platforms.
 * Architecture
@@ -153,5 +152,4 @@ Entities -[hidden]up- services
 #+end_src
 
 #+caption: Architecture
-#+RESULTS:
-[[./docs/images/architecture.png]]
+[[file:docs/images/architecture.png]]
