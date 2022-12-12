@@ -151,7 +151,7 @@ Entities -[hidden]up- services
 @enduml
 #+end_src
 
-#+caption: Architecture
+#+caption: Overal software architecture
 [[file:docs/images/architecture.png]]
 
 ** Business domain
@@ -164,6 +164,58 @@ Entities -[hidden]up- services
     - each one might contain
       - /Services/
       - /Repositories/Interfaces/
-** TODO Identity
-** TODO OAuth
-** TODO Share
+** Identity
+An /identity/ is something you get after successful authentication. After allowing
+/gocial/ to interact with Twitter/LinkedIn this /struct/ will be used to
+hold information about an /identity provider/:
+
+#+caption: Structure for an identity provider
+#+begin_src go
+type IdentityProvider struct {
+    Provider          string     `yaml:"provider"`
+    UserName          string     `yaml:"name"`
+    UserID            string     `yaml:"id"`
+    UserDescription   string     `yaml:"description"`
+    UserAvatarURL     string     `yaml:"userAvatarURL"`
+    AccessToken       string     `yaml:"accessToken"`
+    AccessTokenSecret string     `yaml:"accessTokenSecret"`
+    RefreshToken      string     `yaml:"refreshToken"`
+    ExpiresAt         *time.Time `yaml:"expiry"`
+}
+#+end_src
+** OAuth
+The /oauth/ package uses [[https://github.com/markbates/goth][goth]] to implement the OAuth workflow. /goth/ basically implements this interface:
+
+#+caption: The oauth.Repository interface
+#+begin_src go
+type Repository interface {
+    HandleAuth(echo.Context) error
+    HandleAuthCallback(echo.Context) error
+}
+#+end_src
+- ~HandleAuth~ defines how authentication should be done for different identity providers
+- ~HandleAuthCallback~ is a /callback/ called by the identity providers
+  - this is where the access tokens (among additional data) are sent to
+** Share
+A /share/ is the most basic entity used within /gocial/. A ~Share~ is something that
+will be shared via different identity providers. At the moment you can share
+- an Article
+  - contains an URL, a comment, a title and a list of providers where the article should be shared to
+- a comment
+  - not implemented yet
+
+#+begin_src go
+// ArticleShare is an article to be shared via the share service
+type ArticleShare struct {
+    URL       string `json:"url" form:"url" validate:"required"`
+    Title     string `json:"title" form:"title" validate:"required"`
+    Comment   string `json:"comment" form:"comment" validate:"required"`
+    Providers string `json:"providers" form:"providers" validate:"required"`
+}
+
+// CommentShare is a comment to be shared via the share service
+type CommentShare struct {
+    // TODO: Any other fields needed?
+    Comment string
+}
+#+end_src
