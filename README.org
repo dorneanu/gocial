@@ -1,5 +1,12 @@
 * About
 Share articles and comments via different social media platforms.
+* WIP Features
+- Serverless architecture
+  Currently I use [[https://www.netlify.com/][netlify.com]] to serve my Golang binary as a [[https://docs.netlify.com/functions/build/?fn-language=go][netlify build function]].
+  stateless authentication. Yes, it is a big fat 12 Mb binary file served as a Serverless function!
+- stateless authentication
+  I don't store authentication data (like access token) on the server. I use JWT tokens for /authorization/ which are stored as /secure/, /httpOnly/ cookies. I don't use /localStorage/ nor /sessionStorage/ since in the case of XSS, an attacker could easily access the tokens.
+
 * Architecture
 #+begin_src plantuml :file docs/images/architecture.png :results file replace :cmdline -charset UTF-8 :exports none
 @startuml
@@ -219,3 +226,62 @@ type CommentShare struct {
     Comment string
 }
 #+end_src
+* Project layout
+
+#+begin_src sh :results output :exports results
+tree -L 1 -d .
+#+end_src
+
+#+caption: Overall project layout
+#+RESULTS:
+#+begin_example
+gocial:
+
+├── cli
+├── docs
+├── frontend
+├── functions
+├── internal
+├── lambda
+├── node_modules
+└── server
+
+8 directories
+#+end_example
+
+** //internal
+This is where the /gocial/ specific domain code goes to. This includes /entities/, different /services/, the /authentication/ part and of course web specific stuff like /API/ and /web server/.
+
+  #+begin_src sh :results output :exports results
+  tree -L 2 ./internal
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  ./internal
+  ├── config
+  │   └── config.go
+  ├── entity
+  │   ├── identity.go
+  │   ├── providers.go
+  │   └── share.go
+  ├── identity
+  │   ├── cookie_repository.go
+  │   ├── file_repository.go
+  │   └── repository.go
+  ├── jwt
+  │   └── token.go
+  ├── oauth
+  │   ├── goth_repository.go
+  │   ├── repository.go
+  │   └── service.go
+  └── share
+      ├── linkedin_repository.go
+      ├── repository.go
+      ├── service.go
+      └── twitter_repository.go
+
+  6 directories, 15 files
+  #+end_example
+* TODO Deployment
+* TODO Future plans
