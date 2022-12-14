@@ -1,7 +1,7 @@
 #+EXPORT_FILE_NAME: readme.html
 
 #+caption: Screnshot from December 2022
-file:docs/images/2022-12-screenshot.png
+[[file:docs/images/2022-12-screenshot.png]]
 
 * About
 TL;DR Share articles and comments via different social media platforms.
