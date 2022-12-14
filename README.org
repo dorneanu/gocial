@@ -1,14 +1,42 @@
+#+EXPORT_FILE_NAME: readme.html
+
+#+caption: Screnshot from December 2022
+file:docs/images/2022-12-screenshot.png
+
 * About
-Share articles and comments via different social media platforms.
-* WIP Features
-- Serverless architecture
-  Currently I use [[https://www.netlify.com/][netlify.com]] to serve my Golang binary as a [[https://docs.netlify.com/functions/build/?fn-language=go][netlify build function]].
-  stateless authentication. Yes, it is a big fat 12 Mb binary file served as a Serverless function!
-- stateless authentication
-  I don't store authentication data (like access token) on the server. I use JWT tokens for /authorization/ which are stored as /secure/, /httpOnly/ cookies. I don't use /localStorage/ nor /sessionStorage/ since in the case of XSS, an attacker could easily access the tokens.
+TL;DR Share articles and comments via different social media platforms.
+
+Some while ago I was heavily using services like buffer, zapier and ifttt to automatically share interesting articles on social media. All sharing services had great functionalities (e.g. automated workflows) but you're always limited in the number of shares you can distribute within a time frame without paying for the premium account. At the same time they all lacked support for sharing via LinkedIn. I had a brief look at the LinkedIn API documentation and decided I'll implement my own service using Golang for the backend.
+
+Here is the full [[https://gocial.netlify.app][DEMO]].
+
+* Features
+- *Architecture*
+  - Serverless
+    - Currently I use [[https://www.netlify.com/][netlify.com]] to serve my Golang binary as a [[https://docs.netlify.com/functions/build/?fn-language=go][netlify build function]].
+  - Ports & Adapters
+    - I /try/ to encapsulate business logic in its own domain and have clear boundaries between my components (also see [[*Architecture][Architecture]])
+    - I started working on ~gocial~ long before I have released my presentation on [[https://slides.dornea.nu/2022/hexagonal-architecture/][Hexagonal Architecture]] (in Python).
+- *Backend*
+  - Obvisouly, I use Golang as a core language 😎
+  - I use the [[https://echo.labstack.com/][echo]] web framework for implementing most of the HTTP stuff (server, REST API, OAuth workflows)
+  - for the OAuth part I've mainly used [[https://github.com/markbates/goth][goth]] to do the authentication via the /identity providers/
+  - I use /stateless authentication/ and no authentication data (like access tokens) is stored server-side
+    - I use /JWT tokens/ for /authorization/ and /secure/, /httpOnly/ cookies as storage mechanism
+    - I don't use /localStorage/ nor /sessionStorage/ since in the case of XSS, an attacker could easily access the tokens.
+- *Frontend*
+  - Initially I've implemented the frontend in /Vue.js/ but I switched over to
+    - [[https://pkg.go.dev/html/template][Golang HTML templates]] (server side rendering) and
+    - [[https://tailwindcss.com/][TailwindCSS]] (for styling) and
+    - [[https://alpinejs.dev/][Alpine.js]] (modern jQuery)
+      - syntax very similar to /Vue.js/
+      - also very powerful without the ~npm~ headaches
+  - I really like the /TailwindCSS/ and /Alpine.js/ combo as it's quite minimalistic and feature-rich at the same time
+  - I do plan to migrate to /Vue.js/ in the future
 
 * Architecture
-#+begin_src plantuml :file docs/images/architecture.png :results file replace :cmdline -charset UTF-8 :exports none
+#+begin_src plantuml :file docs/images/architecture.png :results file replace :cmdline -charset UTF-8 :exports none :eval never-export
+
 @startuml
 'skinparam dpi 300
 scale 1600 width
@@ -206,7 +234,7 @@ type Repository interface {
 ** Share
 A /share/ is the most basic entity used within /gocial/. A ~Share~ is something that
 will be shared via different identity providers. At the moment you can share
-- an Article
+- an article
   - contains an URL, a comment, a title and a list of providers where the article should be shared to
 - a comment
   - not implemented yet
@@ -228,7 +256,7 @@ type CommentShare struct {
 #+end_src
 * Project layout
 
-#+begin_src sh :results output :exports results
+#+begin_src sh :results output :exports results :eval never-export
 tree -L 1 -d .
 #+end_src
 
@@ -239,20 +267,15 @@ gocial:
 
 ├── cli
 ├── docs
-├── frontend
-├── functions
 ├── internal
 ├── lambda
-├── node_modules
 └── server
-
-8 directories
 #+end_example
 
-** //internal
-This is where the /gocial/ specific domain code goes to. This includes /entities/, different /services/, the /authentication/ part and of course web specific stuff like /API/ and /web server/.
+** ~/internal~
+This is where the /gocial/ specific domain code goes to. This includes /entities/, different /services/ and the /authentication/ part.
 
-  #+begin_src sh :results output :exports results
+  #+begin_src sh :results output :exports results :eval never-export
   tree -L 2 ./internal
   #+end_src
 
@@ -280,8 +303,54 @@ This is where the /gocial/ specific domain code goes to. This includes /entities
       ├── repository.go
       ├── service.go
       └── twitter_repository.go
-
-  6 directories, 15 files
   #+end_example
-* TODO Deployment
-* TODO Future plans
+** ~/server~
+  #+begin_src sh :results output :exports results :eval never-export
+  tree -L 3 ./server
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  ./server
+  ├── api.go
+  ├── html
+  │   ├── html.go
+  │   ├── package.json
+  │   ├── package-lock.json
+  │   ├── postcss.config.js
+  │   ├── static
+  │   │   └── main.css
+  │   ├── tailwind.config.js
+  │   ├── tailwind.css
+  │   ├── tailwind.js
+  │   └── templates
+  │       ├── about.html
+  │       ├── auth
+  │       ├── base.html
+  │       ├── index.html
+  │       ├── partials
+  │       └── share
+  ├── http.go
+  ├── oauth.go
+  └── share.go
+  #+end_example
+
+  This folder contains HTTP server specific functionalities:
+  - ~/html~
+    - here I put all the HTML templates and components (partials)
+    - I use [[https://tailwindcss.com/][tailwindCSS]] so there is a little bit of ~npm~ foo
+  - ~http.go~
+    - responsible for launching the HTTP server and setting up API routes
+    - renders HTML templates
+  - ~api.go~
+    - handles different API routes (e.g. sharing articles/comments)
+  - ~oauth.go~
+    - defines API endpoints for doing OAuth
+** ~/cli~
+Provides all ~gocial~ functionalities via a CLI tool.
+** ~/lambda~
+Runs the HTTP server as a Lambda function (hosted at [[https://www.netlify.com/][netlify.com]]).
+* COMMENT Local Variables                                                       :noexport:
+# Local Variables:
+# after-save-hook: org-html-export-to-html
+# End:
