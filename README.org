@@ -400,15 +400,18 @@ ____________________________________O/_______
 
 #+end_src
 * More screenshots
-#+caption: gocial connects to twitter
+~gocial~ connects to twitter:
+
 [[file:docs/images/gocial-connects-to-twitter.png]]
 
 
-#+caption: gocial after successful logins
+~gocial~ after successful logins:
+
 [[file:docs/images/gocial-after-successful-logins.png]]
 
 
-#+caption: Sharing an article
+Sharing an article:
+
 [[file:docs/images/gocial-share-article.png]]
 
 * COMMENT Local Variables                                                       :noexport:
