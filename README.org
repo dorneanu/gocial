@@ -14,7 +14,7 @@ Here is the full [[https://gocial.netlify.app][DEMO]].
 - *Architecture*
   - Serverless
     - Currently I use [[https://www.netlify.com/][netlify.com]] to serve my Golang binary as a [[https://docs.netlify.com/functions/build/?fn-language=go][netlify build function]].
-  - Ports & Adapters
+  - Hexagonal Architecture (also known as Ports & Adapters)
     - I /try/ to encapsulate business logic in its own domain and have clear boundaries between my components (also see [[*Architecture][Architecture]])
     - I started working on ~gocial~ long before I have released my presentation on [[https://slides.dornea.nu/2022/hexagonal-architecture/][Hexagonal Architecture]] (in Python).
 - *Backend*
@@ -350,6 +350,67 @@ This is where the /gocial/ specific domain code goes to. This includes /entities
 Provides all ~gocial~ functionalities via a CLI tool.
 ** ~/lambda~
 Runs the HTTP server as a Lambda function (hosted at [[https://www.netlify.com/][netlify.com]]).
+* Run it
+You can of course run it locally. However you'll need to create Twitter and LinkedIn accordingly. Then you'll need to set following /environment variables/ (in ~.env~ in the same folder):
+#+begin_src sh
+export LINKEDIN_CLIENT_ID=xxx
+export LINKEDIN_CLIENT_SECRET=xxx
+
+export TWITTER_CLIENT_KEY=xxx
+export TWITTER_CLIENT_SECRET=xxx
+export TWITTER_ACCESS_TOKEN=xxx
+export TWITTER_ACCESS_SECRET=xxx
+#+end_src
+
+Then you run ~make~
+#+begin_src sh
+$ make build
+$ ./gocial --help
+NAME:
+   gocial - A new cli application
+
+USAGE:
+   gocial [global options] command [command options] [arguments...]
+
+VERSION:
+   v0.1
+
+AUTHOR:
+   Victor Dorneanu
+
+COMMANDS:
+   authenticate, a  Authenticate against identity providers
+   post, p          Post some article
+   help, h          Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help (default: false)
+   --version, -v  print the version (default: false)
+
+$ ./gocial a
+   ____    __
+  / __/___/ /  ___
+ / _// __/ _ \/ _ \
+/___/\__/_//_/\___/ v4.7.2
+High performance, minimalist Go web framework
+https://echo.labstack.com
+____________________________________O/_______
+                                    O\
+⇨ http server started on 127.0.0.1:3000
+
+#+end_src
+* More screenshots
+#+caption: gocial connects to twitter
+[[file:docs/images/gocial-connects-to-twitter.png]]
+
+
+#+caption: gocial after successful logins
+[[file:docs/images/gocial-after-successful-logins.png]]
+
+
+#+caption: Sharing an article
+[[file:docs/images/gocial-share-article.png]]
+
 * COMMENT Local Variables                                                       :noexport:
 # Local Variables:
 # after-save-hook: org-html-export-to-html
